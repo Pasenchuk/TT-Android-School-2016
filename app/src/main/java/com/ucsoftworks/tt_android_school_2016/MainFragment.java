@@ -19,7 +19,7 @@ import butterknife.OnClick;
 public class MainFragment extends Fragment {
 
 
-    @Bind(R.id.label)
+    @Bind(R.id.info_label)
     TextView label;
 
     int counter = 0;
@@ -44,7 +44,7 @@ public class MainFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.button)
+    @OnClick(R.id.push_me_button)
     public void onButtonClick() {
         counter++;
         label.setText(String.valueOf(counter));
