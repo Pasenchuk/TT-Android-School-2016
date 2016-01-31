@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -21,8 +20,6 @@ public class MainFragment extends Fragment {
 
     @Bind(R.id.label)
     TextView label;
-    @Bind(R.id.button)
-    Button button;
 
     public MainFragment() {
         // Required empty public constructor
