@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,8 +46,13 @@ public class MainFragment extends Fragment {
     }
 
     @OnClick(R.id.push_me_button)
-    public void onButtonClick() {
+    public void onPushMeButtonClick() {
         counter++;
         label.setText(String.valueOf(counter));
+    }
+
+    @OnClick(R.id.press_me_button)
+    public void onPressMeButtonClick() {
+        Toast.makeText(getActivity(), R.string.toast_message, Toast.LENGTH_SHORT).show();
     }
 }
