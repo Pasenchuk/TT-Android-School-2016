@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -20,6 +21,8 @@ public class MainFragment extends Fragment {
 
     @Bind(R.id.label)
     TextView label;
+
+    int counter = 0;
 
     public MainFragment() {
         // Required empty public constructor
@@ -39,5 +42,11 @@ public class MainFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @OnClick(R.id.button)
+    public void onButtonClick() {
+        counter++;
+        label.setText(String.valueOf(counter));
     }
 }
