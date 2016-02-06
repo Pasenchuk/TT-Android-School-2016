@@ -1,4 +1,4 @@
-package com.ucsoftworks.tt_android_school_2016;
+package com.ucsoftworks.tt_android_school_2016.ui.dashboard;
 
 
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ucsoftworks.tt_android_school_2016.R;
+import com.ucsoftworks.tt_android_school_2016.ui.base.BaseFragment;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -17,7 +20,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends BaseFragment {
 
 
     @Bind(R.id.info_label)
@@ -37,7 +40,6 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        ButterKnife.bind(this, view);
 
         noButterKnifeLabel = (TextView) (view.findViewById(R.id.no_butter_knife_view));
 
@@ -53,12 +55,6 @@ public class MainFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
     @OnClick(R.id.push_me_button)
     public void onPushMeButtonClick() {
         counter++;
@@ -69,4 +65,5 @@ public class MainFragment extends Fragment {
     public void onPressMeButtonClick() {
         Toast.makeText(getActivity(), R.string.toast_message, Toast.LENGTH_SHORT).show();
     }
+
 }

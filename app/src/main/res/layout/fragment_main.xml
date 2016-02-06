@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.ucsoftworks.tt_android_school_2016.MainFragment">
+    tools:context=".ui.dashboard.MainFragment">
     <!--Заменяем FrameLayout на Linear, так как он автоматически-->
     <!--выстраивает элементы интерфейса один за другим-->
     <TextView

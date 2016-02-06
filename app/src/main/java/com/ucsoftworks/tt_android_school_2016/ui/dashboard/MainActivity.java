@@ -1,9 +1,11 @@
-package com.ucsoftworks.tt_android_school_2016;
+package com.ucsoftworks.tt_android_school_2016.ui.dashboard;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+import com.ucsoftworks.tt_android_school_2016.R;
+import com.ucsoftworks.tt_android_school_2016.ui.base.BaseActivity;
+
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
