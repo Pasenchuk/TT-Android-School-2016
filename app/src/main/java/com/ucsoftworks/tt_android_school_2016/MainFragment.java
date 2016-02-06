@@ -23,6 +23,8 @@ public class MainFragment extends Fragment {
     @Bind(R.id.info_label)
     TextView label;
 
+    TextView noButterKnifeLabel;
+
     int counter = 0;
 
     public MainFragment() {
@@ -36,6 +38,18 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
+
+        noButterKnifeLabel = (TextView) (view.findViewById(R.id.no_butter_knife_view));
+
+        view
+                .findViewById(R.id.press_no_butter_knife_button)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        noButterKnifeLabel.setText(getString(R.string.no_butter_knife_pressed));
+                    }
+                });
+
         return view;
     }
 

@@ -6,4 +6,7 @@
     <string name="press_me">Press Me!!!</string>
     <string name="push_me">Push Me</string>
     <string name="toast_message">Toast Message</string>
+    <string name="no_butter_knife">No butter knife</string>
+    <string name="no_butter_knife_pressed">No butter knife was pressed</string>
+    <string name="no_butter_knife_press">Press no butter knife</string>
 </resources>
