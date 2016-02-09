@@ -9,4 +9,5 @@
     <string name="no_butter_knife">No butter knife</string>
     <string name="no_butter_knife_pressed">No butter knife was pressed</string>
     <string name="no_butter_knife_press">Press no butter knife</string>
+    <string name="title_activity_activity_stack1">ActivityStack1</string>
 </resources>

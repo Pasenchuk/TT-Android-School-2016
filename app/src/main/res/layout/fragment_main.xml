@@ -4,41 +4,75 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ui.dashboard.MainFragment">
-    <!--Заменяем FrameLayout на Linear, так как он автоматически-->
-    <!--выстраивает элементы интерфейса один за другим-->
-    <TextView
-        android:id="@+id/info_label"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment" />
-    <!--layout_height сменили на wrap_content, чтобы -->
-    <!--поле не занимало всю высоту экрана-->
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/no_butter_knife_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/no_butter_knife" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!--Заменяем FrameLayout на Linear, так как он автоматически-->
+            <!--выстраивает элементы интерфейса один за другим-->
+            <TextView
+                android:id="@+id/info_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hello_blank_fragment" />
+            <!--layout_height сменили на wrap_content, чтобы -->
+            <!--поле не занимало всю высоту экрана-->
 
-    <Button
-        android:id="@+id/push_me_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/push_me" />
+            <TextView
+                android:id="@+id/no_butter_knife_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_butter_knife" />
 
-    <Button
-        android:id="@+id/press_me_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/press_me" />
+            <Button
+                android:id="@+id/push_me_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/push_me" />
 
-    <Button
-        android:id="@+id/press_no_butter_knife_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/no_butter_knife_press" />
+            <Button
+                android:id="@+id/press_me_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/press_me" />
+
+            <Button
+                android:id="@+id/press_no_butter_knife_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/no_butter_knife_press" />
+
+            <Button
+                android:id="@+id/new_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Open New Activity" />
+
+            <Button
+                android:id="@+id/activity_stack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Activity Stack" />
+
+
+            <Button
+                android:id="@+id/fragment_precise_stack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Fragment Precise Stack" />
+        </LinearLayout>
+    </ScrollView>
+
 
 </LinearLayout>
