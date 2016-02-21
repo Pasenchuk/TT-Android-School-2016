@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Intents App</string>
+    <string name="title_activity_second">SecondActivity</string>
+    <string name="no_extra">No Extra :\'(</string>
+    <string name="get_result">Get result!</string>
+    <string name="press_me">Press me</string>
+    <string name="type_here">Type Here</string>
+    <string name="no_result">No Result :\'(</string>
+</resources>
