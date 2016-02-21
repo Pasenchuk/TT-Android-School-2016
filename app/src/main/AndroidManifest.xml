@@ -12,8 +12,15 @@
         <activity android:name=".ui.dashboard.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="image/*"/>
             </intent-filter>
         </activity>
         <activity android:name=".ui.new_activity.ActivityNew" />
@@ -22,7 +29,7 @@
             android:label="@string/title_activity_activity_stack1"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.activity_stack.ActivityStack2" />
-        <activity android:name=".ui.fragment_stack.ActivityFragmentStack"></activity>
+        <activity android:name=".ui.fragment_stack.ActivityFragmentStack"/>
     </application>
 
 </manifest>

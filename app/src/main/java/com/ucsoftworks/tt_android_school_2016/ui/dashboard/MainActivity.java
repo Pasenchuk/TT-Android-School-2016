@@ -25,6 +25,11 @@ public class MainActivity extends BaseActivity implements MainFragment.MainFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Intent intent = getIntent();
+
+        if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+
+        }
 //        вызываем getSupportFragmentManager, так как по умлочанию у нас используется
 //                библиотека AppCompat, обеспечивающая совместимость фишек новых андроидов
 //                со старыми
