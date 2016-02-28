@@ -1,1 +1,1 @@
-include ':app', ':intentsapp', ':lists'
+include ':app', ':intentsapp', ':lists', ':fragmentsopening'
