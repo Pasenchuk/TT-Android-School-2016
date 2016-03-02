@@ -1,4 +1,4 @@
-package com.ucsoftworks.fragmentsopening;
+package com.ucsoftworks.fragmentsopening.extra;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
