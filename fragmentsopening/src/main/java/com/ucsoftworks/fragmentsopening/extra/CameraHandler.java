@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
-import com.nupi.agent.R;
-import com.nupi.agent.ui.dialogs.MessageBox;
-import com.nupi.agent.utils.TimeUtils;
+import com.ucsoftworks.fragmentsopening.R;
 
 import java.io.File;
+import java.util.Date;
 
 /**
  * Created by Pasenchuk Victor on 20.05.15
@@ -20,7 +20,7 @@ public class CameraHandler {
 
     //TODO: check SD Card permission in Android 6+
 
-    public static final String PHOTO_PATH = String.format("%s/DCIM/Nupi", Environment.getExternalStorageDirectory());
+    public static final String PHOTO_PATH = String.format("%s/DCIM/Thumbtack", Environment.getExternalStorageDirectory());
 
     public static final int REQUEST_IMAGE_CAPTURE = 45224;
     public static final int REQUEST_OPEN_IMAGE = 45225;
@@ -40,7 +40,7 @@ public class CameraHandler {
     }
 
     public String openCamera(String folder_name) {
-        String path = String.format("%s%s/%s.jpg", PHOTO_PATH, folder_name, TimeUtils.currentTimeInDbFormat());
+        String path = String.format("%s%s/%s.jpg", PHOTO_PATH, folder_name, new Date().toString());
 
         try {
 
@@ -58,10 +58,14 @@ public class CameraHandler {
                 else
                     activity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             } else
-                MessageBox.show(activity.getString(R.string.no_camera), activity);
+                Toast
+                        .makeText(activity, activity.getString(R.string.no_camera), Toast.LENGTH_SHORT)
+                        .show();
 
         } catch (Exception ignored) {
-            MessageBox.show(activity.getString(R.string.no_sdcard_access), activity);
+            Toast
+                    .makeText(activity, activity.getString(R.string.no_sdcard_access), Toast.LENGTH_SHORT)
+                    .show();
         }
         return path;
     }

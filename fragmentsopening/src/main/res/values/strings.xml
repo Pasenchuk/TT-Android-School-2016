@@ -8,4 +8,6 @@
     <string name="set_value">Set value</string>
     <string name="not_valid_number">Not valid number</string>
     <string name="open_activity">Open Activity</string>
+    <string name="no_camera">No camera app</string>
+    <string name="no_sdcard_access">No SD Card!</string>
 </resources>
