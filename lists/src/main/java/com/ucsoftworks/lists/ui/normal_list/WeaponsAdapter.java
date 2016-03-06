@@ -41,7 +41,7 @@ public class WeaponsAdapter extends ArrayAdapter<Weapon> {
             viewHolder = (ViewHolder) convertView.getTag();
 
         final Weapon item = getItem(position);
-        viewHolder.weaponDescription.setText(String.format("%s %s", item.getWeaponDescription().toString(), item.getWeaponKind().toString()));
+        viewHolder.weaponDescription.setText(item.getWeaponDescriptionString());
         switch (item.getWeaponKind()) {
             case FIST:
                 viewHolder.weaponIcon.setImageResource(R.drawable.fist);
@@ -69,6 +69,11 @@ public class WeaponsAdapter extends ArrayAdapter<Weapon> {
         return 2;
     }
 
+    @Override
+    public long getItemId(int position) {
+        return getItem(position).getId();
+    }
+
     static class ViewHolder {
         @Bind(R.id.weapon_icon)
         ImageView weaponIcon;
@@ -79,4 +84,5 @@ public class WeaponsAdapter extends ArrayAdapter<Weapon> {
             ButterKnife.bind(this, view);
         }
     }
+
 }

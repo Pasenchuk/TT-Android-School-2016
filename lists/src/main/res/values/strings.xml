@@ -6,4 +6,6 @@
     <string name="normal_list">Normal List</string>
     <string name="expandable_list">Expandable List</string>
     <string name="recycler_view">Recycler View</string>
+    <string name="add_item">Add Item</string>
+    <string name="remove_item">Remove Item</string>
 </resources>

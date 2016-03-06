@@ -8,15 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.ucsoftworks.lists.R;
 import com.ucsoftworks.lists.model.Weapon;
 import com.ucsoftworks.lists.ui.base.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +34,8 @@ public class NormalListFragment extends BaseFragment {
 
     @Bind(R.id.weapons)
     AbsListView weaponsListView;
+    private ArrayList<Weapon> weaponArrayList;
+    private WeaponsAdapter weaponsAdapter;
 
     public NormalListFragment() {
         // Required empty public constructor
@@ -52,9 +60,44 @@ public class NormalListFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ArrayList<Weapon> weapons = new ArrayList<>(CAPACITY);
-        for (int i = 0; i < 100; i++)
-            weapons.add(new Weapon());
-        weaponsListView.setAdapter(new WeaponsAdapter(getActivity(), 0, weapons));
+        weaponArrayList = new ArrayList<>(CAPACITY * 2);
+        for (int i = 0; i < CAPACITY; i++)
+            weaponArrayList.add(new Weapon());
+//
+//        Collections.sort(weaponArrayList, new Comparator<Weapon>() {
+//            @Override
+//            public int compare(Weapon weapon, Weapon t1) {
+//                return weapon.getWeaponDescriptionString().compareTo(t1.getWeaponDescriptionString());
+//            }
+//        });
+
+        weaponsAdapter = new WeaponsAdapter(getActivity(), 0, weaponArrayList);
+        weaponsListView.setAdapter(weaponsAdapter);
+
+        weaponsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getActivity(), weaponArrayList.get(i).getWeaponDescriptionString(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    @OnItemClick(R.id.weapons)
+    public void onItemClick(int position) {
+        Toast.makeText(getActivity(), weaponArrayList.get(position).getWeaponDescriptionString(), Toast.LENGTH_SHORT).show();
+
+    }
+
+    @OnClick(R.id.add_item)
+    public void onAddItemClick() {
+        weaponArrayList.add(1, new Weapon());
+        weaponsAdapter.notifyDataSetChanged();
+    }
+
+    @OnClick(R.id.remove_item)
+    public void onRemoveItemClick() {
+        weaponArrayList.remove(1);
+        weaponsAdapter.notifyDataSetChanged();
     }
 }

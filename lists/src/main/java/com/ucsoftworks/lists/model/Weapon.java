@@ -9,6 +9,7 @@ public class Weapon {
 
     private WeaponKind weaponKind;
     private WeaponDescription weaponDescription;
+    private long id;
 
     private static final Random random = new Random();
 
@@ -17,6 +18,7 @@ public class Weapon {
         final WeaponDescription[] weaponDescriptions = WeaponDescription.values();
         this.weaponKind = weaponKinds[random.nextInt(weaponKinds.length)];
         this.weaponDescription = weaponDescriptions[random.nextInt(weaponDescriptions.length)];
+        id = random.nextLong();
     }
 
     public WeaponKind getWeaponKind() {
@@ -25,5 +27,13 @@ public class Weapon {
 
     public WeaponDescription getWeaponDescription() {
         return weaponDescription;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getWeaponDescriptionString() {
+        return String.format("%s %s", getWeaponDescription().toString(), getWeaponKind().toString());
     }
 }

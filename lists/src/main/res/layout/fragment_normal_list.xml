@@ -1,12 +1,27 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.normal_list.NormalListFragment">
 
-    <ListView
-        android:id="@+id/weapons"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <Spinner
+        android:id="@+id/weapons_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/add_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_item" />
+
+    <Button
+        android:id="@+id/remove_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remove_item" />
+
+    <include layout="@layout/view_normal_list" />
+
+</LinearLayout>
