@@ -37,7 +37,7 @@ public class WeaponsAdapter extends ArrayAdapter<Weapon> {
             viewHolder = (ViewHolder) convertView.getTag();
 
         final Weapon item = getItem(position);
-        viewHolder.weaponDescription.setText(String.format("%s %s", item.getWeaponKind().toString(), item.getWeaponDescription().toString()));
+        viewHolder.weaponDescription.setText(String.format("%s %s", item.getWeaponDescription().toString(), item.getWeaponKind().toString()));
         switch (item.getWeaponKind()) {
             case FIST:
                 viewHolder.weaponIcon.setImageResource(R.drawable.fist);
