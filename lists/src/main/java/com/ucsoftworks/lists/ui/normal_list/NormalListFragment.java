@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.AbsListView;
 
 import com.ucsoftworks.lists.R;
 import com.ucsoftworks.lists.model.Weapon;
@@ -27,7 +27,7 @@ public class NormalListFragment extends BaseFragment {
     public static final int CAPACITY = 100;
 
     @Bind(R.id.weapons)
-    ListView weaponsListView;
+    AbsListView weaponsListView;
 
     public NormalListFragment() {
         // Required empty public constructor
