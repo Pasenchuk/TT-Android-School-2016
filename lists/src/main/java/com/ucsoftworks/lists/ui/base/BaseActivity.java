@@ -82,6 +82,13 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .commit();
     }
 
+    protected void addFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container, fragment)
+                .commit();
+    }
+
     protected void returnToBackStack(String stackKey, boolean inclusive) {
         //FragmentManager.POP_BACK_STACK_INCLUSIVE (1) - вытолкнуть из стэка и закрыть не только фрагменты выше
         //добавленного по ключу, но и сам фрагмент, добавленный по ключу
