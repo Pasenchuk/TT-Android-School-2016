@@ -5,11 +5,6 @@
     android:orientation="vertical"
     tools:context=".ui.normal_list.NormalListFragment">
 
-    <Spinner
-        android:id="@+id/weapons_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <Button
         android:id="@+id/add_item"
         android:layout_width="wrap_content"

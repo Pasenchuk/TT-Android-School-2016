@@ -16,13 +16,10 @@ import com.ucsoftworks.lists.model.Weapon;
 import com.ucsoftworks.lists.ui.base.BaseFragment;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,7 +60,8 @@ public class NormalListFragment extends BaseFragment {
         weaponArrayList = new ArrayList<>(CAPACITY * 2);
         for (int i = 0; i < CAPACITY; i++)
             weaponArrayList.add(new Weapon());
-//
+
+// If you want to sort
 //        Collections.sort(weaponArrayList, new Comparator<Weapon>() {
 //            @Override
 //            public int compare(Weapon weapon, Weapon t1) {
@@ -76,18 +74,20 @@ public class NormalListFragment extends BaseFragment {
 
         weaponsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), weaponArrayList.get(i).getWeaponDescriptionString(), Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Toast.makeText(getActivity(), weaponArrayList.get(position).getWeaponDescriptionString(), Toast.LENGTH_SHORT).show();
 
             }
         });
     }
 
-    @OnItemClick(R.id.weapons)
-    public void onItemClick(int position) {
-        Toast.makeText(getActivity(), weaponArrayList.get(position).getWeaponDescriptionString(), Toast.LENGTH_SHORT).show();
-
-    }
+// With butterknife
+//
+//    @OnItemClick(R.id.weapons)
+//    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//        Toast.makeText(getActivity(), weaponArrayList.get(position).getWeaponDescriptionString(), Toast.LENGTH_SHORT).show();
+//
+//    }
 
     @OnClick(R.id.add_item)
     public void onAddItemClick() {
