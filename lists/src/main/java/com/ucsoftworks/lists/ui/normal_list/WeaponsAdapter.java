@@ -1,6 +1,7 @@
 package com.ucsoftworks.lists.ui.normal_list;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,11 @@ public class WeaponsAdapter extends ArrayAdapter<Weapon> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
+            Log.d("ADAPTER", "CREATE VIEW");
             convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.list_item_weapon, parent, false);
+                    .inflate(getItemViewType(position) == 0 ?
+                                    R.layout.list_item_weapon : R.layout.list_item_weapon_odd
+                            , parent, false);
 
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
@@ -52,8 +56,17 @@ public class WeaponsAdapter extends ArrayAdapter<Weapon> {
                 viewHolder.weaponIcon.setImageResource(R.drawable.missile);
                 break;
         }
-
         return convertView;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position % 2;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
     }
 
     static class ViewHolder {
