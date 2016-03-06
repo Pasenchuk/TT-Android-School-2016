@@ -1,4 +1,4 @@
-package com.ucsoftworks.lists.ui;
+package com.ucsoftworks.lists.ui.main;
 
 import android.os.Bundle;
 
