@@ -35,6 +35,24 @@ public class WeaponsAdapter extends ArrayAdapter<Weapon> {
             convertView.setTag(viewHolder);
         } else
             viewHolder = (ViewHolder) convertView.getTag();
+
+        final Weapon item = getItem(position);
+        viewHolder.weaponDescription.setText(String.format("%s %s", item.getWeaponKind().toString(), item.getWeaponDescription().toString()));
+        switch (item.getWeaponKind()) {
+            case FIST:
+                viewHolder.weaponIcon.setImageResource(R.drawable.fist);
+                break;
+            case BULLET:
+                viewHolder.weaponIcon.setImageResource(R.drawable.bullet);
+                break;
+            case BOMB:
+                viewHolder.weaponIcon.setImageResource(R.drawable.bomb);
+                break;
+            case MISSILE:
+                viewHolder.weaponIcon.setImageResource(R.drawable.missile);
+                break;
+        }
+
         return convertView;
     }
 
