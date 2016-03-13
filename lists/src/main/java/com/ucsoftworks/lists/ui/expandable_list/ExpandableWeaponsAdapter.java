@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.ucsoftworks.lists.R;
 import com.ucsoftworks.lists.model.GroupedWeapons;
 import com.ucsoftworks.lists.model.Weapon;
+import com.ucsoftworks.lists.ui.WeaponsViewHolder;
 
 import java.util.List;
 
@@ -80,31 +81,31 @@ public class ExpandableWeaponsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int i, int i1, boolean b, View convertView, ViewGroup viewGroup) {
-        WeaponViewHolder weaponViewHolder;
+        WeaponsViewHolder weaponsViewHolder;
         if (convertView == null) {
             Log.d("ADAPTER", "CREATE VIEW");
             convertView = LayoutInflater.from(context)
                     .inflate(R.layout.list_item_weapon, viewGroup, false);
 
-            weaponViewHolder = new WeaponViewHolder(convertView);
-            convertView.setTag(weaponViewHolder);
+            weaponsViewHolder = new WeaponsViewHolder(convertView);
+            convertView.setTag(weaponsViewHolder);
         } else
-            weaponViewHolder = (WeaponViewHolder) convertView.getTag();
+            weaponsViewHolder = (WeaponsViewHolder) convertView.getTag();
 
         final Weapon item = getChild(i, i1);
-        weaponViewHolder.weaponDescription.setText(item.getWeaponDescriptionString());
+        weaponsViewHolder.getWeaponDescription().setText(item.getWeaponDescriptionString());
         switch (item.getWeaponKind()) {
             case FIST:
-                weaponViewHolder.weaponIcon.setImageResource(R.drawable.fist);
+                weaponsViewHolder.getWeaponIcon().setImageResource(R.drawable.fist);
                 break;
             case BULLET:
-                weaponViewHolder.weaponIcon.setImageResource(R.drawable.bullet);
+                weaponsViewHolder.getWeaponIcon().setImageResource(R.drawable.bullet);
                 break;
             case BOMB:
-                weaponViewHolder.weaponIcon.setImageResource(R.drawable.bomb);
+                weaponsViewHolder.getWeaponIcon().setImageResource(R.drawable.bomb);
                 break;
             case MISSILE:
-                weaponViewHolder.weaponIcon.setImageResource(R.drawable.missile);
+                weaponsViewHolder.getWeaponIcon().setImageResource(R.drawable.missile);
                 break;
         }
         return convertView;
@@ -115,15 +116,4 @@ public class ExpandableWeaponsAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
-
-    static class WeaponViewHolder {
-        @Bind(R.id.weapon_icon)
-        ImageView weaponIcon;
-        @Bind(R.id.weapon_description)
-        TextView weaponDescription;
-
-        WeaponViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
-    }
 }
