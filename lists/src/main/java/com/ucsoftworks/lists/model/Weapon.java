@@ -36,4 +36,25 @@ public class Weapon {
     public String getWeaponDescriptionString() {
         return String.format("%s %s", getWeaponDescription().toString(), getWeaponKind().toString());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Weapon weapon = (Weapon) o;
+
+        if (id != weapon.id) return false;
+        if (weaponKind != weapon.weaponKind) return false;
+        return weaponDescription == weapon.weaponDescription;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = weaponKind != null ? weaponKind.hashCode() : 0;
+        result = 31 * result + (weaponDescription != null ? weaponDescription.hashCode() : 0);
+        result = 31 * result + (int) (id ^ (id >>> 32));
+        return result;
+    }
 }

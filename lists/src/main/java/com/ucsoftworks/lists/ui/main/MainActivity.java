@@ -8,6 +8,7 @@ import com.ucsoftworks.lists.events.ExpandableListClickEvent;
 import com.ucsoftworks.lists.events.NormalListClickEvent;
 import com.ucsoftworks.lists.events.RecyclerViewClickEvent;
 import com.ucsoftworks.lists.ui.base.BaseActivity;
+import com.ucsoftworks.lists.ui.expandable_list.ExpandableListFragment;
 import com.ucsoftworks.lists.ui.normal_list.NormalListFragment;
 
 public class MainActivity extends BaseActivity {
@@ -29,6 +30,7 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe
     public void onExpandableListClickEvent(ExpandableListClickEvent event) {
+        replaceFragment(new ExpandableListFragment());
 
     }
 

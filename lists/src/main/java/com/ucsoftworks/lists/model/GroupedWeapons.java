@@ -29,15 +29,16 @@ public class GroupedWeapons {
 
         GroupedWeapons that = (GroupedWeapons) o;
 
-        if (!groupName.equals(that.groupName)) return false;
-        return weapons.equals(that.weapons);
+        if (groupName != null ? !groupName.equals(that.groupName) : that.groupName != null)
+            return false;
+        return weapons != null ? weapons.equals(that.weapons) : that.weapons == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = groupName.hashCode();
-        result = 31 * result + weapons.hashCode();
+        int result = groupName != null ? groupName.hashCode() : 0;
+        result = 31 * result + (weapons != null ? weapons.hashCode() : 0);
         return result;
     }
 }
