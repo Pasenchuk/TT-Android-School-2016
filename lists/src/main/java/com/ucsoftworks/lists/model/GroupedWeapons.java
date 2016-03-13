@@ -21,4 +21,23 @@ public class GroupedWeapons {
     public List<Weapon> getWeapons() {
         return weapons;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GroupedWeapons that = (GroupedWeapons) o;
+
+        if (!groupName.equals(that.groupName)) return false;
+        return weapons.equals(that.weapons);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = groupName.hashCode();
+        result = 31 * result + weapons.hashCode();
+        return result;
+    }
 }
