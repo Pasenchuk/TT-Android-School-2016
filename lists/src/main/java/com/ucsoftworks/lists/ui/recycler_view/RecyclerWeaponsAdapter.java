@@ -25,6 +25,8 @@ public class RecyclerWeaponsAdapter extends RecyclerView.Adapter<WeaponsViewHold
     public RecyclerWeaponsAdapter(Context context, List<Weapon> weapons) {
         this.context = context;
         this.weapons = weapons;
+
+        setHasStableIds(true);
     }
 
     @Override
@@ -54,5 +56,10 @@ public class RecyclerWeaponsAdapter extends RecyclerView.Adapter<WeaponsViewHold
     @Override
     public int getItemViewType(int position) {
         return position & 1;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return weapons.get(position).getId();
     }
 }
