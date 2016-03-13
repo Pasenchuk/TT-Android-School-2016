@@ -13,6 +13,7 @@ import com.ucsoftworks.lists.R;
 import com.ucsoftworks.lists.model.GroupedWeapons;
 import com.ucsoftworks.lists.model.Weapon;
 import com.ucsoftworks.lists.ui.WeaponsViewHolder;
+import com.ucsoftworks.lists.utils.WeaponListUtils;
 
 import java.util.List;
 
@@ -93,27 +94,13 @@ public class ExpandableWeaponsAdapter extends BaseExpandableListAdapter {
             weaponsViewHolder = (WeaponsViewHolder) convertView.getTag();
 
         final Weapon item = getChild(i, i1);
-        weaponsViewHolder.getWeaponDescription().setText(item.getWeaponDescriptionString());
-        switch (item.getWeaponKind()) {
-            case FIST:
-                weaponsViewHolder.getWeaponIcon().setImageResource(R.drawable.fist);
-                break;
-            case BULLET:
-                weaponsViewHolder.getWeaponIcon().setImageResource(R.drawable.bullet);
-                break;
-            case BOMB:
-                weaponsViewHolder.getWeaponIcon().setImageResource(R.drawable.bomb);
-                break;
-            case MISSILE:
-                weaponsViewHolder.getWeaponIcon().setImageResource(R.drawable.missile);
-                break;
-        }
+        WeaponListUtils.fillWeaponListItem(weaponsViewHolder, item);
         return convertView;
     }
 
     @Override
     public boolean isChildSelectable(int i, int i1) {
-        return false;
+        return true;
     }
 
 }

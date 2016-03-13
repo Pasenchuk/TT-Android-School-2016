@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -15,13 +14,11 @@ import com.ucsoftworks.lists.R;
 import com.ucsoftworks.lists.model.GroupedWeapons;
 import com.ucsoftworks.lists.model.Weapon;
 import com.ucsoftworks.lists.ui.base.BaseFragment;
-import com.ucsoftworks.lists.ui.normal_list.WeaponsAdapter;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -78,6 +75,23 @@ public class ExpandableListFragment extends BaseFragment {
 
         weaponsAdapter = new ExpandableWeaponsAdapter(weaponGroupsArrayList, getActivity());
         groupedWeapons.setAdapter(weaponsAdapter);
+
+//        groupedWeapons.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+//            @Override
+//            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+//                Toast.makeText(getActivity(), weaponGroupsArrayList.get(i).getGroupName(), Toast.LENGTH_SHORT).show();
+//                return true;
+//            }
+//        });
+
+        groupedWeapons.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                Toast.makeText(getActivity(), weaponGroupsArrayList.get(i).getWeapons().get(i1).getWeaponDescriptionString(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
 //
 //        groupedWeapons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override

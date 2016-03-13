@@ -10,6 +10,7 @@ import com.ucsoftworks.lists.events.RecyclerViewClickEvent;
 import com.ucsoftworks.lists.ui.base.BaseActivity;
 import com.ucsoftworks.lists.ui.expandable_list.ExpandableListFragment;
 import com.ucsoftworks.lists.ui.normal_list.NormalListFragment;
+import com.ucsoftworks.lists.ui.recycler_view.RecyclerListFragment;
 
 public class MainActivity extends BaseActivity {
 
@@ -31,11 +32,10 @@ public class MainActivity extends BaseActivity {
     @Subscribe
     public void onExpandableListClickEvent(ExpandableListClickEvent event) {
         replaceFragment(new ExpandableListFragment());
-
     }
 
     @Subscribe
     public void onRecyclerViewClickEvent(RecyclerViewClickEvent event) {
-
+        replaceFragment(new RecyclerListFragment());
     }
 }

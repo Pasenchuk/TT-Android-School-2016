@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import com.ucsoftworks.lists.R;
 import com.ucsoftworks.lists.model.Weapon;
 import com.ucsoftworks.lists.ui.WeaponsViewHolder;
+import com.ucsoftworks.lists.utils.WeaponListUtils;
 
 import java.util.List;
 
@@ -37,21 +38,7 @@ public class WeaponsAdapter extends ArrayAdapter<Weapon> {
             viewHolder = (WeaponsViewHolder) convertView.getTag();
 
         final Weapon item = getItem(position);
-        viewHolder.getWeaponDescription().setText(item.getWeaponDescriptionString());
-        switch (item.getWeaponKind()) {
-            case FIST:
-                viewHolder.getWeaponIcon().setImageResource(R.drawable.fist);
-                break;
-            case BULLET:
-                viewHolder.getWeaponIcon().setImageResource(R.drawable.bullet);
-                break;
-            case BOMB:
-                viewHolder.getWeaponIcon().setImageResource(R.drawable.bomb);
-                break;
-            case MISSILE:
-                viewHolder.getWeaponIcon().setImageResource(R.drawable.missile);
-                break;
-        }
+        WeaponListUtils.fillWeaponListItem(viewHolder, item);
         return convertView;
     }
 
