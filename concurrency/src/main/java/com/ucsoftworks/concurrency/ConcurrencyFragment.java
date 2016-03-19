@@ -88,6 +88,7 @@ public class ConcurrencyFragment extends Fragment {
                     @Override
                     public void run() {
                         message.setText("Done!");
+                        progressBar.setProgress(100);
                     }
                 }, 3000);
                 break;
