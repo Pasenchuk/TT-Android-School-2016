@@ -72,9 +72,10 @@ public class ConcurrencyFragment extends Fragment {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        for (int i = 0; i < 10; i++) {
+                        for (int i = 1; i <= 10; i++) {
                             SystemClock.sleep(1000);
                             final String text = String.valueOf(i);
+                            postProgress(i * 10);
                             postText(text);
                         }
                     }
@@ -138,6 +139,16 @@ public class ConcurrencyFragment extends Fragment {
                 @Override
                 public void run() {
                     message.setText(text);
+                }
+            });
+    }
+
+    private void postProgress(final int progress) {
+        if (isVisible())
+            progressBar.post(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setProgress(progress);
                 }
             });
     }
