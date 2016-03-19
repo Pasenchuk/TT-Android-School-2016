@@ -1,6 +1,7 @@
 package com.ucsoftworks.concurrency;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -24,7 +26,11 @@ public class ConcurrencyFragment extends Fragment {
     @Bind(R.id.message)
     TextView message;
 
+    @Bind(R.id.progress_bar)
+    ProgressBar progressBar;
+
     private Handler handler = new Handler();
+    private AsyncTask<Double, Integer, String> asyncTask;
 
     public ConcurrencyFragment() {
         // Required empty public constructor
@@ -49,6 +55,7 @@ public class ConcurrencyFragment extends Fragment {
     @OnClick({R.id.runnable, R.id.new_thread, R.id.handler_post, R.id.async_task, R.id.timer_task, R.id.rx})
     public void onClick(View view) {
         message.setText(null);
+        progressBar.setProgress(0);
         switch (view.getId()) {
             case R.id.runnable:
 
@@ -84,6 +91,39 @@ public class ConcurrencyFragment extends Fragment {
                 }, 3000);
                 break;
             case R.id.async_task:
+
+                asyncTask = new AsyncTask<Double, Integer, String>() {
+                    @Override
+                    protected String doInBackground(Double... doubles) {
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                    }
+
+                    @Override
+                    protected void onPostExecute(String result) {
+                        super.onPostExecute(result);
+                    }
+
+                    @Override
+                    protected void onProgressUpdate(Integer... values) {
+                        super.onProgressUpdate(values);
+                    }
+
+                    @Override
+                    protected void onCancelled(String result) {
+                        super.onCancelled(result);
+                    }
+
+                    @Override
+                    protected void onCancelled() {
+                        super.onCancelled();
+                    }
+                };
+
                 break;
             case R.id.timer_task:
                 break;
