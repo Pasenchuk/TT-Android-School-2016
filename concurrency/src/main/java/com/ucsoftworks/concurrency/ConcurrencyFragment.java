@@ -75,6 +75,13 @@ public class ConcurrencyFragment extends Fragment {
 
                 break;
             case R.id.handler_post:
+                message.setText("wait...");
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        message.setText("Done!");
+                    }
+                }, 3000);
                 break;
             case R.id.async_task:
                 break;
@@ -94,7 +101,7 @@ public class ConcurrencyFragment extends Fragment {
                 }
             });
     }
-    
+
     private void postTextDirectly(final String text) {
         if (isVisible())
             message.post(new Runnable() {
