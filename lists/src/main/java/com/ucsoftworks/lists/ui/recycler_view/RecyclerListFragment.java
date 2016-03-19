@@ -9,8 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.squareup.otto.Subscribe;
 import com.ucsoftworks.lists.R;
+import com.ucsoftworks.lists.events.WeaponClickEvent;
 import com.ucsoftworks.lists.model.Weapon;
 import com.ucsoftworks.lists.ui.base.BaseFragment;
 
@@ -60,7 +63,7 @@ public class RecyclerListFragment extends BaseFragment {
         for (int i = 0; i < CAPACITY; i++)
             weaponArrayList.add(new Weapon());
 
-        weaponsAdapter = new RecyclerWeaponsAdapter(getActivity(), weaponArrayList);
+        weaponsAdapter = new RecyclerWeaponsAdapter(getActivity(), weaponArrayList, getBus());
         weaponsListView.setAdapter(weaponsAdapter);
 
 
@@ -68,15 +71,9 @@ public class RecyclerListFragment extends BaseFragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         weaponsListView.setLayoutManager(linearLayoutManager);
-//
-//        weaponsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                Toast.makeText(getActivity(), weaponArrayList.get(position).getWeaponDescriptionString(), Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
     }
+
+
 
 // With butterknife
 //
@@ -96,5 +93,11 @@ public class RecyclerListFragment extends BaseFragment {
     public void onRemoveItemClick() {
         weaponArrayList.remove(1);
         weaponsAdapter.notifyDataSetChanged();
+    }
+
+
+    @Subscribe
+    public void onWeaponClickEvent(WeaponClickEvent event) {
+        Toast.makeText(getActivity(), event.weapon.getWeaponDescriptionString(), Toast.LENGTH_SHORT).show();
     }
 }

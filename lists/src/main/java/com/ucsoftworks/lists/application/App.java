@@ -12,7 +12,7 @@ import com.squareup.otto.Bus;
  */
 public class App extends Application {
 
-    private Bus bus;
+    private Bus bus = new Bus();
 
     public static App getApp(Activity activity) {
         return (App) activity.getApplication();
@@ -28,7 +28,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        bus = new Bus();
     }
 
     public Bus getBus() {
