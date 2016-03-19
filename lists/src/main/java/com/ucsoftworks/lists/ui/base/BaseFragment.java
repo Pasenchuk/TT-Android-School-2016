@@ -24,6 +24,9 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        bus = App.getApp(this).getBus();
+
         Log.d("LifeCycle", this.getClass().getName() + " OnCreate");
         if (savedInstanceState != null)
             Icepick.restoreInstanceState(this, savedInstanceState);
@@ -40,7 +43,6 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        bus = App.getApp(this).getBus();
         bus.register(this);
     }
 
