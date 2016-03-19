@@ -1,1 +1,1 @@
-include ':app', ':intentsapp', ':lists', ':fragmentsopening', ':learnstack'
+include ':app', ':intentsapp', ':lists', ':fragmentsopening', ':learnstack', ':concurrency'
