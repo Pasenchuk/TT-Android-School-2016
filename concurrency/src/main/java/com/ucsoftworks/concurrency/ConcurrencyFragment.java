@@ -44,8 +44,17 @@ public class ConcurrencyFragment extends Fragment {
 
     @OnClick({R.id.runnable, R.id.new_thread, R.id.handler_post, R.id.async_task, R.id.timer_task, R.id.rx})
     public void onClick(View view) {
+        message.setText(null);
         switch (view.getId()) {
             case R.id.runnable:
+
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        message.setText("From runnable!");
+                    }
+                }.run();
+
                 break;
             case R.id.new_thread:
                 break;
