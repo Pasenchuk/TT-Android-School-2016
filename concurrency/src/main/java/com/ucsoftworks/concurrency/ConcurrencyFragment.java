@@ -2,6 +2,8 @@ package com.ucsoftworks.concurrency;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,8 @@ public class ConcurrencyFragment extends Fragment {
 
     @Bind(R.id.message)
     TextView message;
+
+    private Handler handler = new Handler();
 
     public ConcurrencyFragment() {
         // Required empty public constructor
@@ -57,6 +61,18 @@ public class ConcurrencyFragment extends Fragment {
 
                 break;
             case R.id.new_thread:
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < 10; i++) {
+                            SystemClock.sleep(1000);
+                            final String text = String.valueOf(i);
+                            postText(text);
+                        }
+                    }
+                }).start();
+
                 break;
             case R.id.handler_post:
                 break;
@@ -68,4 +84,15 @@ public class ConcurrencyFragment extends Fragment {
                 break;
         }
     }
+
+    private void postText(final String text) {
+        if (isVisible())
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    message.setText(text);
+                }
+            });
+    }
+
 }
