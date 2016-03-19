@@ -94,5 +94,14 @@ public class ConcurrencyFragment extends Fragment {
                 }
             });
     }
-
+    
+    private void postTextDirectly(final String text) {
+        if (isVisible())
+            message.post(new Runnable() {
+                @Override
+                public void run() {
+                    message.setText(text);
+                }
+            });
+    }
 }
