@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -33,7 +34,9 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.observables.MathObservable;
 import rx.schedulers.Schedulers;
 
 
@@ -328,6 +331,24 @@ public class ConcurrencyFragment extends Fragment {
                             @Override
                             public void onNext(Void aVoid) {
                                 Log.d("Rx", "onNext");
+                            }
+                        });
+
+
+                MathObservable.from(
+                        Observable.from(new Integer[]{1, 2, 3, 4})
+                )
+                        //sumInteger, averageInteger
+                        .max(new Comparator<Integer>() {
+                            @Override
+                            public int compare(Integer integer, Integer t1) {
+                                return integer.compareTo(t1);
+                            }
+                        })
+                        .subscribe(new Action1<Integer>() {
+                            @Override
+                            public void call(Integer integer) {
+                                Log.d("Rx math", String.valueOf(integer));
                             }
                         });
 
