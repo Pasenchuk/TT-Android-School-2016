@@ -61,6 +61,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/rx" />
+            <Button
+                android:id="@+id/thread_pool"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/thread_pool" />
         </LinearLayout>
     </ScrollView>
 

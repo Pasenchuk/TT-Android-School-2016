@@ -18,6 +18,8 @@ import android.widget.TextView;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
@@ -43,10 +45,13 @@ public class ConcurrencyFragment extends Fragment {
     @Bind(R.id.progress_bar)
     ProgressBar progressBar;
 
+
     private Handler handler = new Handler();
     private AsyncTask<Double, Integer, String> asyncTask;
     private Timer timer;
     private Subscription subscription;
+
+    private ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
 
     public ConcurrencyFragment() {
         // Required empty public constructor
@@ -100,7 +105,7 @@ public class ConcurrencyFragment extends Fragment {
             subscription.unsubscribe();
     }
 
-    @OnClick({R.id.runnable, R.id.new_thread, R.id.handler_post, R.id.async_task, R.id.timer_task, R.id.rx})
+    @OnClick({R.id.runnable, R.id.new_thread, R.id.handler_post, R.id.async_task, R.id.timer_task, R.id.rx, R.id.thread_pool})
     public void onClick(View view) {
         message.setText(null);
         progressBar.setProgress(0);
@@ -117,17 +122,7 @@ public class ConcurrencyFragment extends Fragment {
                 break;
             case R.id.new_thread:
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 1; i <= 10; i++) {
-                            SystemClock.sleep(1000);
-                            final String text = String.valueOf(i);
-                            progressBar.setProgress(i * 10);
-                            postText(text);
-                        }
-                    }
-                }).start();
+                new Thread(getRunnable()).start();
 
                 break;
             case R.id.handler_post:
@@ -228,7 +223,26 @@ public class ConcurrencyFragment extends Fragment {
                             }
                         });
                 break;
+            case R.id.thread_pool:
+                threadPoolExecutor.submit(getRunnable());
+                break;
         }
+    }
+
+    @NonNull
+    private Runnable getRunnable() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 1; i <= 10; i++) {
+                    Log.d("Background Computation", String.valueOf(i));
+                    SystemClock.sleep(1000);
+                    final String text = String.valueOf(i);
+                    progressBar.setProgress(i * 10);
+                    postText(text);
+                }
+            }
+        };
     }
 
     private void postText(final String text) {

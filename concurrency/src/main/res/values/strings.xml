@@ -9,4 +9,5 @@
     <string name="timer_task">timer task</string>
     <string name="rx">rx</string>
     <string name="async_task">async task</string>
+    <string name="thread_pool">Thread Pool</string>
 </resources>
