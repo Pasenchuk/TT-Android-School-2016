@@ -189,174 +189,200 @@ public class ConcurrencyFragment extends Fragment {
 
                 break;
             case R.id.handler_post:
-                message.setText("wait...");
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        message.setText("Done!");
-                        progressBar.setProgress(100);
-                    }
-                }, 3000);
+
+                handlerPostSample();
+                
                 break;
             case R.id.async_task:
 
                 cancelAsyncTask();
 
-                asyncTask = new AsyncTask<Double, Integer, String>() {
-                    @Override
-                    protected String doInBackground(Double... doubles) {
-                        for (int i = 0; i < doubles.length; i++) {
-                            publishProgress(i * 100 / doubles.length);
-                            SystemClock.sleep(1000);
-                        }
-                        return Arrays.toString(doubles);
-                    }
-
-                    @Override
-                    protected void onPostExecute(String result) {
-                        super.onPostExecute(result);
-                        if (isVisible()) {
-                            message.setText(result);
-                            progressBar.setProgress(100);
-                        }
-                    }
-
-                    @Override
-                    protected void onProgressUpdate(Integer... values) {
-                        super.onProgressUpdate(values);
-                        if (isVisible())
-                            progressBar.setProgress(values[0]);
-                    }
-                };
-
-                asyncTask.execute(1d, 2d, 3d);
+                asyncTaskSample();
 
                 break;
             case R.id.timer_task:
                 cancelTimer();
 
-                message.setText("Timer started");
-
-
-                timer = new Timer();
-
-
-                TimerTask timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (isVisible()) {
-                            progressBar.setProgress(100);
-
-                            postTextDirectly("Timer finished");
-                        }
-
-                    }
-                };
-
-                timer.schedule(timerTask, 2000);
+                timerSample();
                 break;
             case R.id.rx:
                 cancelRx();
 
-                subscription = Observable
-                        .interval(1, TimeUnit.SECONDS)
-                        .take(EMITS_COUNT)
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<Long>() {
-                            @Override
-                            public void onCompleted() {
-                                if (isVisible()) {
-                                    progressBar.setProgress(100);
-                                    message.setText("Rx finished");
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(Long aLong) {
-                                if (isVisible()) {
-                                    progressBar.setProgress((int) (aLong * 100 / EMITS_COUNT));
-                                    message.setText(String.valueOf(aLong));
-                                }
-                            }
-                        });
+                rxIntervalSample();
 
 
-                Observable
-                        .from(new String[]{"1", "2", "3", "4"})
-                        .map(new Func1<String, Integer>() {
-                            @Override
-                            public Integer call(String s) {
-                                return Integer.valueOf(s);
-                            }
-                        })
-                        .filter(new Func1<Integer, Boolean>() {
-                            @Override
-                            public Boolean call(Integer integer) {
-                                return (integer % 2) == 1;
-                            }
-                        })
-                        .flatMap(new Func1<Integer, Observable<Void>>() {
-                            @Override
-                            public Observable<Void> call(Integer integer) {
-                                return Observable.create(new Observable.OnSubscribe<Void>() {
-                                    @Override
-                                    public void call(Subscriber<? super Void> subscriber) {
-                                        SystemClock.sleep(1000);
-                                        Log.d("Rx", "Sent");
-                                        subscriber.onNext(null);
-                                        subscriber.onCompleted();
-                                    }
-                                });
-                            }
-                        })
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<Void>() {
-                            @Override
-                            public void onCompleted() {
-                                Log.d("Rx", "onCompleted");
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(Void aVoid) {
-                                Log.d("Rx", "onNext");
-                            }
-                        });
+                rxOperatorsChainSample();
 
 
-                MathObservable.from(
-                        Observable.from(new Integer[]{1, 2, 3, 4})
-                )
-                        //sumInteger, averageInteger
-                        .max(new Comparator<Integer>() {
-                            @Override
-                            public int compare(Integer integer, Integer t1) {
-                                return integer.compareTo(t1);
-                            }
-                        })
-                        .subscribe(new Action1<Integer>() {
-                            @Override
-                            public void call(Integer integer) {
-                                Log.d("Rx math", String.valueOf(integer));
-                            }
-                        });
+                rxMathSample();
 
                 break;
             case R.id.thread_pool:
                 threadPoolExecutor.submit(getRunnable());
                 break;
         }
+    }
+
+    private void handlerPostSample() {
+        message.setText("wait...");
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                message.setText("Done!");
+                progressBar.setProgress(100);
+            }
+        }, 3000);
+    }
+
+    private void asyncTaskSample() {
+        asyncTask = new AsyncTask<Double, Integer, String>() {
+            @Override
+            protected String doInBackground(Double... doubles) {
+                for (int i = 0; i < doubles.length; i++) {
+                    publishProgress(i * 100 / doubles.length);
+                    SystemClock.sleep(1000);
+                }
+                return Arrays.toString(doubles);
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+                if (isVisible()) {
+                    message.setText(result);
+                    progressBar.setProgress(100);
+                }
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                if (isVisible())
+                    progressBar.setProgress(values[0]);
+            }
+        };
+
+        asyncTask.execute(1d, 2d, 3d);
+    }
+
+    private void timerSample() {
+        message.setText("Timer started");
+
+
+        timer = new Timer();
+
+
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (isVisible()) {
+                    progressBar.setProgress(100);
+
+                    postTextDirectly("Timer finished");
+                }
+
+            }
+        };
+
+        timer.schedule(timerTask, 2000);
+    }
+
+    private void rxIntervalSample() {
+        subscription = Observable
+                .interval(1, TimeUnit.SECONDS)
+                .take(EMITS_COUNT)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        if (isVisible()) {
+                            progressBar.setProgress(100);
+                            message.setText("Rx finished");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        if (isVisible()) {
+                            progressBar.setProgress((int) (aLong * 100 / EMITS_COUNT));
+                            message.setText(String.valueOf(aLong));
+                        }
+                    }
+                });
+    }
+
+    private void rxOperatorsChainSample() {
+        Observable
+                .from(new String[]{"1", "2", "3", "4"})
+                .map(new Func1<String, Integer>() {
+                    @Override
+                    public Integer call(String s) {
+                        return Integer.valueOf(s);
+                    }
+                })
+                .filter(new Func1<Integer, Boolean>() {
+                    @Override
+                    public Boolean call(Integer integer) {
+                        return (integer % 2) == 1;
+                    }
+                })
+                .flatMap(new Func1<Integer, Observable<Void>>() {
+                    @Override
+                    public Observable<Void> call(Integer integer) {
+                        return Observable.create(new Observable.OnSubscribe<Void>() {
+                            @Override
+                            public void call(Subscriber<? super Void> subscriber) {
+                                SystemClock.sleep(1000);
+                                Log.d("Rx", "Sent");
+                                subscriber.onNext(null);
+                                subscriber.onCompleted();
+                            }
+                        });
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d("Rx", "onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                        Log.d("Rx", "onNext");
+                    }
+                });
+    }
+
+    private void rxMathSample() {
+        MathObservable.from(
+                Observable.from(new Integer[]{1, 2, 3, 4})
+        )
+                //sumInteger, averageInteger
+                .max(new Comparator<Integer>() {
+                    @Override
+                    public int compare(Integer integer, Integer t1) {
+                        return integer.compareTo(t1);
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        Log.d("Rx math", String.valueOf(integer));
+                    }
+                });
     }
 
     @NonNull
