@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.ucsoftworks.networkapp.R;
 import com.ucsoftworks.networkapp.app.App;
-import com.ucsoftworks.networkapp.network.Api;
+import com.ucsoftworks.networkapp.network.AbbreviationsApi;
 import com.ucsoftworks.networkapp.ui.base.BaseFragment;
 
 import javax.inject.Inject;
@@ -25,7 +25,7 @@ import rx.schedulers.Schedulers;
 public class MainFragment extends BaseFragment {
 
     @Inject
-    Api api;
+    AbbreviationsApi abbreviationsApi;
 
     public MainFragment() {
         // Required empty public constructor
@@ -48,8 +48,8 @@ public class MainFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        api
-                .getResponse()
+        abbreviationsApi
+                .getResponse("kg")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Void>() {

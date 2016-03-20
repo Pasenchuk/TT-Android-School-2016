@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.squareup.otto.Bus;
 import com.ucsoftworks.networkapp.app.App;
-import com.ucsoftworks.networkapp.network.Api;
+import com.ucsoftworks.networkapp.network.AbbreviationsApi;
 
 import java.io.IOException;
 
@@ -28,7 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class AppModule {
 
-    private static final String BASE_URL = "http://google.com/";
+    private static final String BASE_URL = "http://www.nactem.ac.uk/software/acromine/";
     private final App app;
 
     public AppModule(App app) {
@@ -44,7 +44,7 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public Api provideApi() {
+    public AbbreviationsApi provideApi() {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -61,7 +61,7 @@ public class AppModule {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(httpClient)
                 .build()
-                .create(Api.class);
+                .create(AbbreviationsApi.class);
     }
 
     @NonNull
