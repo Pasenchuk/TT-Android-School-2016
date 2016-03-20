@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.Arrays;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -97,7 +99,11 @@ public class ConcurrencyFragment extends Fragment {
                 asyncTask = new AsyncTask<Double, Integer, String>() {
                     @Override
                     protected String doInBackground(Double... doubles) {
-                        return null;
+                        for (int i = 0; i < doubles.length; i++) {
+                            publishProgress(i * 100 / doubles.length);
+                            SystemClock.sleep(1000);
+                        }
+                        return Arrays.toString(doubles);
                     }
 
                     @Override
@@ -108,11 +114,17 @@ public class ConcurrencyFragment extends Fragment {
                     @Override
                     protected void onPostExecute(String result) {
                         super.onPostExecute(result);
+                        if (isVisible()) {
+                            message.setText(result);
+                            progressBar.setProgress(100);
+                        }
                     }
 
                     @Override
                     protected void onProgressUpdate(Integer... values) {
                         super.onProgressUpdate(values);
+                        if (isVisible())
+                            progressBar.setProgress(values[0]);
                     }
 
                     @Override
@@ -125,6 +137,8 @@ public class ConcurrencyFragment extends Fragment {
                         super.onCancelled();
                     }
                 };
+
+                asyncTask.execute(1d, 2d, 3d);
 
                 break;
             case R.id.timer_task:
