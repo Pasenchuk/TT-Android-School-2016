@@ -1,5 +1,7 @@
 package com.ucsoftworks.networkapp.network;
 
+import com.ucsoftworks.networkapp.network.models.SearchResponse;
+
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -10,6 +12,6 @@ import rx.Observable;
 public interface AbbreviationsApi {
 
     @GET("dictionary.py")
-    Observable<Void> getResponse(@Query("sf") String searchString);
+    Observable<SearchResponse> getResponse(@Query("sf") String searchString);
 
 }
