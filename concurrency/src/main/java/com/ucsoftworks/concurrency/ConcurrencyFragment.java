@@ -5,8 +5,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -43,6 +46,7 @@ public class ConcurrencyFragment extends Fragment {
     private Handler handler = new Handler();
     private AsyncTask<Double, Integer, String> asyncTask;
     private Timer timer;
+    private Subscription subscription;
 
     public ConcurrencyFragment() {
         // Required empty public constructor
@@ -72,12 +76,28 @@ public class ConcurrencyFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+
+        cancelAsyncTask();
+
+        cancelTimer();
+
+        cancelRx();
+
+    }
+
+    private void cancelAsyncTask() {
         if (asyncTask != null && !asyncTask.isCancelled())
             asyncTask.cancel(true);
+    }
 
+    private void cancelTimer() {
         if (timer != null)
             timer.cancel();
+    }
 
+    private void cancelRx() {
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
     }
 
     @OnClick({R.id.runnable, R.id.new_thread, R.id.handler_post, R.id.async_task, R.id.timer_task, R.id.rx})
@@ -122,6 +142,8 @@ public class ConcurrencyFragment extends Fragment {
                 break;
             case R.id.async_task:
 
+                cancelAsyncTask();
+
                 asyncTask = new AsyncTask<Double, Integer, String>() {
                     @Override
                     protected String doInBackground(Double... doubles) {
@@ -153,11 +175,10 @@ public class ConcurrencyFragment extends Fragment {
 
                 break;
             case R.id.timer_task:
+                cancelTimer();
 
                 message.setText("Timer started");
 
-                if (timer != null)
-                    timer.cancel();
 
                 timer = new Timer();
 
@@ -177,8 +198,9 @@ public class ConcurrencyFragment extends Fragment {
                 timer.schedule(timerTask, 2000);
                 break;
             case R.id.rx:
+                cancelRx();
 
-                Observable
+                subscription = Observable
                         .interval(1, TimeUnit.SECONDS)
                         .take(EMITS_COUNT)
                         .subscribeOn(Schedulers.computation())
