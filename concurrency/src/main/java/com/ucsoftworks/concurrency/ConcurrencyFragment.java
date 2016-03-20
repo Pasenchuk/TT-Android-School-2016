@@ -8,10 +8,14 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -29,6 +33,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -41,6 +46,9 @@ public class ConcurrencyFragment extends Fragment {
     public static final int EMITS_COUNT = 5;
     @Bind(R.id.message)
     TextView message;
+
+    @Bind(R.id.edit_text)
+    EditText editText;
 
     @Bind(R.id.progress_bar)
     ProgressBar progressBar;
@@ -61,6 +69,7 @@ public class ConcurrencyFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
     }
 
     @Override
@@ -70,6 +79,57 @@ public class ConcurrencyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_concurrency, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                editText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        subscriber.onNext(charSequence.toString());
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+            }
+        })
+                .filter(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        return !TextUtils.isEmpty(s) && s.length() > 2;
+                    }
+                })
+                .debounce(2, TimeUnit.SECONDS)
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        Log.d("Rx", s);
+                    }
+                });
+
     }
 
     @Override
@@ -222,6 +282,55 @@ public class ConcurrencyFragment extends Fragment {
                                 }
                             }
                         });
+
+
+                Observable
+                        .from(new String[]{"1", "2", "3", "4"})
+                        .map(new Func1<String, Integer>() {
+                            @Override
+                            public Integer call(String s) {
+                                return Integer.valueOf(s);
+                            }
+                        })
+                        .filter(new Func1<Integer, Boolean>() {
+                            @Override
+                            public Boolean call(Integer integer) {
+                                return (integer % 2) == 1;
+                            }
+                        })
+                        .flatMap(new Func1<Integer, Observable<Void>>() {
+                            @Override
+                            public Observable<Void> call(Integer integer) {
+                                return Observable.create(new Observable.OnSubscribe<Void>() {
+                                    @Override
+                                    public void call(Subscriber<? super Void> subscriber) {
+                                        SystemClock.sleep(1000);
+                                        Log.d("Rx", "Sent");
+                                        subscriber.onNext(null);
+                                        subscriber.onCompleted();
+                                    }
+                                });
+                            }
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<Void>() {
+                            @Override
+                            public void onCompleted() {
+                                Log.d("Rx", "onCompleted");
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onNext(Void aVoid) {
+                                Log.d("Rx", "onNext");
+                            }
+                        });
+
                 break;
             case R.id.thread_pool:
                 threadPoolExecutor.submit(getRunnable());
