@@ -1,9 +1,11 @@
-package com.ucsoftworks.networkapp;
+package com.ucsoftworks.networkapp.ui.main_screen;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import com.ucsoftworks.networkapp.R;
+import com.ucsoftworks.networkapp.ui.base.BaseActivity;
+
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
