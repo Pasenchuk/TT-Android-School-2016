@@ -13,6 +13,7 @@ import com.ucsoftworks.networkapp.R;
 import com.ucsoftworks.networkapp.app.App;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import icepick.Icepick;
 

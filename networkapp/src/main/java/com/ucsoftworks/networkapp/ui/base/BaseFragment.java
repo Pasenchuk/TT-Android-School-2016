@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.squareup.otto.Bus;
 import com.ucsoftworks.networkapp.app.App;
+import com.ucsoftworks.networkapp.network.Api;
 
 import javax.inject.Inject;
 
