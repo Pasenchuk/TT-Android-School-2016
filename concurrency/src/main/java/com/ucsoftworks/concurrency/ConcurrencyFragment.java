@@ -104,18 +104,17 @@ public class ConcurrencyFragment extends Fragment {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-
                     }
                 });
             }
         })
+                .debounce(2, TimeUnit.SECONDS)
                 .filter(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String s) {
                         return !TextUtils.isEmpty(s) && s.length() > 2;
                     }
                 })
-                .debounce(2, TimeUnit.SECONDS)
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -191,7 +190,7 @@ public class ConcurrencyFragment extends Fragment {
             case R.id.handler_post:
 
                 handlerPostSample();
-                
+
                 break;
             case R.id.async_task:
 
