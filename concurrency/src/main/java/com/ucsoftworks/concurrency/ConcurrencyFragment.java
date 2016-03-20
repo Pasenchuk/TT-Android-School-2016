@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,11 @@ public class ConcurrencyFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +58,13 @@ public class ConcurrencyFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         butterknife.ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (asyncTask != null && !asyncTask.isCancelled())
+            asyncTask.cancel(true);
     }
 
     @OnClick({R.id.runnable, R.id.new_thread, R.id.handler_post, R.id.async_task, R.id.timer_task, R.id.rx})
@@ -107,11 +120,6 @@ public class ConcurrencyFragment extends Fragment {
                     }
 
                     @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                    }
-
-                    @Override
                     protected void onPostExecute(String result) {
                         super.onPostExecute(result);
                         if (isVisible()) {
@@ -125,16 +133,6 @@ public class ConcurrencyFragment extends Fragment {
                         super.onProgressUpdate(values);
                         if (isVisible())
                             progressBar.setProgress(values[0]);
-                    }
-
-                    @Override
-                    protected void onCancelled(String result) {
-                        super.onCancelled(result);
-                    }
-
-                    @Override
-                    protected void onCancelled() {
-                        super.onCancelled();
                     }
                 };
 
