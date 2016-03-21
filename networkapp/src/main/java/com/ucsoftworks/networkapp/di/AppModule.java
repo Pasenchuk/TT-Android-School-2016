@@ -28,7 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class AppModule {
 
-    private static final String BASE_URL = "http://www.nactem.ac.uk/software/acromine/";
+    private static final String BASE_URL = "http://nactem.ac.uk/software/acromine/";
     private final App app;
 
     public AppModule(App app) {

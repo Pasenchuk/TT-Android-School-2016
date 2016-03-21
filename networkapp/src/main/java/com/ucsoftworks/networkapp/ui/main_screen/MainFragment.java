@@ -2,6 +2,7 @@ package com.ucsoftworks.networkapp.ui.main_screen;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -12,7 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.ucsoftworks.networkapp.R;
 import com.ucsoftworks.networkapp.app.App;
@@ -31,6 +35,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -40,11 +45,18 @@ import rx.schedulers.Schedulers;
  */
 public class MainFragment extends BaseFragment {
 
+    public static final int TIMEOUT = 1;
     @Inject
     AbbreviationsApi abbreviationsApi;
     @Bind(R.id.abbreviation)
-    AutoCompleteTextView abbreviation;
-    private ArrayAdapter<String> autocompleteAdapter;
+    EditText abbreviation;
+    @Bind(R.id.progress_bar)
+    ProgressBar progressBar;
+    @Bind(R.id.list_view)
+    ListView listView;
+    private Observable<String> stringObservable;
+    private Subscription subscription;
+
 
     public MainFragment() {
         // Required empty public constructor
@@ -55,6 +67,7 @@ public class MainFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         App.getApp(this).getAppComponent().inject(this);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,8 +82,32 @@ public class MainFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initStringObservable();
 
-        Observable.create(new Observable.OnSubscribe<String>() {
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        subscribeOnTextChange();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+
+    private void initStringObservable() {
+        stringObservable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
                 abbreviation.addTextChangedListener(new TextWatcher() {
@@ -81,6 +118,7 @@ public class MainFragment extends BaseFragment {
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        listView.setAdapter(getStringArrayAdapter(new ArrayList<String>()));
                         subscriber.onNext(charSequence.toString());
                     }
 
@@ -90,13 +128,23 @@ public class MainFragment extends BaseFragment {
                 });
             }
         })
-                .debounce(2, TimeUnit.SECONDS)
+                .debounce(TIMEOUT, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .filter(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String s) {
-                        return !TextUtils.isEmpty(s) && s.length() > 1;
+                        final boolean b = !TextUtils.isEmpty(s) && s.length() > 1;
+                        if (b) {
+                            setProgressIndicator(View.VISIBLE, View.GONE);
+                        }
+                        return b;
                     }
                 })
+                .observeOn(Schedulers.io());
+    }
+
+    private void subscribeOnTextChange() {
+        subscription = stringObservable
                 .flatMap(new Func1<String, Observable<List<SearchResponse>>>() {
                     @Override
                     public Observable<List<SearchResponse>> call(String s) {
@@ -132,25 +180,39 @@ public class MainFragment extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        MainFragment.this.onError(e);
+                        if (isVisible())
+                            subscribeOnTextChange();
                     }
 
                     @Override
                     public void onNext(List<String> strings) {
-                        Log.d("Rx view", "onNext");
 
-                        autocompleteAdapter = new ArrayAdapter<>(getActivity(),
-                                android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
-                        abbreviation.setAdapter(autocompleteAdapter);
-                        abbreviation.showDropDown();
+                        setProgressIndicator(View.GONE, View.VISIBLE);
+
+                        Log.d("Rx view", "onNext");
+                        if (isVisible())
+                            listView.setAdapter(getStringArrayAdapter(strings));
                     }
                 });
-
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
+    private void onError(Throwable e) {
+        setProgressIndicator(View.GONE, View.VISIBLE);
+        Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_SHORT).show();
+        e.printStackTrace();
+    }
+
+    private void setProgressIndicator(int progress, int list) {
+        if (isVisible()) {
+            progressBar.setVisibility(progress);
+            listView.setVisibility(list);
+        }
+    }
+
+    @NonNull
+    private ArrayAdapter<String> getStringArrayAdapter(List<String> strings) {
+        return new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_dropdown_item_1line, strings);
     }
 }
