@@ -151,19 +151,13 @@ public class MainFragment extends BaseFragment {
                         return abbreviationsApi.getResponse(s);
                     }
                 })
-                .flatMap(new Func1<List<SearchResponse>, Observable<SearchResponse>>() {
-
+                .map(new Func1<List<SearchResponse>, List<String>>() {
                     @Override
-                    public Observable<SearchResponse> call(List<SearchResponse> searchResponses) {
-                        Log.d("Rx view", "flatMap List<SearchResponse>");
-                        return Observable.from(searchResponses);
-                    }
-                })
-                .map(new Func1<SearchResponse, List<String>>() {
-                    @Override
-                    public List<String> call(SearchResponse searchResponse) {
+                    public List<String> call(List<SearchResponse> searchResponses) {
                         Log.d("Rx view", "flatMap List<String>");
-                        final List<Lf> lfs = searchResponse.getLfs();
+                        if (searchResponses.size() != 1)
+                            return new ArrayList<>();
+                        final List<Lf> lfs = searchResponses.get(0).getLfs();
                         ArrayList<String> strings = new ArrayList<>(lfs.size());
                         for (Lf lf : lfs)
                             strings.add(lf.getLf());
