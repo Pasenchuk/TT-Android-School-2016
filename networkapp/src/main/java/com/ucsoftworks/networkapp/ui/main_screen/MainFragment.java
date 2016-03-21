@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.ucsoftworks.networkapp.network.models.Lf;
 import com.ucsoftworks.networkapp.network.models.SearchResponse;
 import com.ucsoftworks.networkapp.ui.base.BaseFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -42,6 +44,7 @@ public class MainFragment extends BaseFragment {
     AbbreviationsApi abbreviationsApi;
     @Bind(R.id.abbreviation)
     AutoCompleteTextView abbreviation;
+    private ArrayAdapter<String> autocompleteAdapter;
 
     public MainFragment() {
         // Required empty public constructor
@@ -94,31 +97,37 @@ public class MainFragment extends BaseFragment {
                         return !TextUtils.isEmpty(s) && s.length() > 1;
                     }
                 })
-                .flatMap(new Func1<String, Observable<SearchResponse>>() {
+                .flatMap(new Func1<String, Observable<List<SearchResponse>>>() {
                     @Override
-                    public Observable<SearchResponse> call(String s) {
+                    public Observable<List<SearchResponse>> call(String s) {
                         return abbreviationsApi.getResponse(s);
                     }
                 })
-                .flatMap(new Func1<SearchResponse, Observable<Lf>>() {
+                .flatMap(new Func1<List<SearchResponse>, Observable<SearchResponse>>() {
+
                     @Override
-                    public Observable<Lf> call(SearchResponse searchResponse) {
-                        return Observable.from(searchResponse.getLfs());
+                    public Observable<SearchResponse> call(List<SearchResponse> searchResponses) {
+                        Log.d("Rx view", "flatMap List<SearchResponse>");
+                        return Observable.from(searchResponses);
                     }
                 })
-                .map(new Func1<Lf, String>() {
+                .map(new Func1<SearchResponse, List<String>>() {
                     @Override
-                    public String call(Lf lf) {
-                        return lf.getLf();
+                    public List<String> call(SearchResponse searchResponse) {
+                        Log.d("Rx view", "flatMap List<String>");
+                        final List<Lf> lfs = searchResponse.getLfs();
+                        ArrayList<String> strings = new ArrayList<>(lfs.size());
+                        for (Lf lf : lfs)
+                            strings.add(lf.getLf());
+                        return strings;
                     }
                 })
-                .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<String>>() {
                     @Override
                     public void onCompleted() {
-
+                        Log.d("Rx view", "onCompleted");
                     }
 
                     @Override
@@ -128,10 +137,12 @@ public class MainFragment extends BaseFragment {
 
                     @Override
                     public void onNext(List<String> strings) {
+                        Log.d("Rx view", "onNext");
 
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                                android.R.layout.simple_list_item_1, strings);
-                        abbreviation.setAdapter(adapter);
+                        autocompleteAdapter = new ArrayAdapter<>(getActivity(),
+                                android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+                        abbreviation.setAdapter(autocompleteAdapter);
+                        abbreviation.showDropDown();
                     }
                 });
 
