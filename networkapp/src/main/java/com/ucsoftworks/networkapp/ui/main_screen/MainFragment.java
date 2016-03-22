@@ -128,9 +128,9 @@ public class MainFragment extends BaseFragment {
                 });
             }
         })
-                .debounce(TIMEOUT, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(new Func1<String, Boolean>() {
+                .debounce(TIMEOUT, TimeUnit.SECONDS) //если пользователь ничего не делал 1 секунду, то обрабатываем результат ввода. В противном случае игнорируем.
+                .observeOn(AndroidSchedulers.mainThread()) //следующий коллбэк переводим в UI поток (будем изменять Views)
+                .filter(new Func1<String, Boolean>() { //отсекаем слишком короткие строчки
                     @Override
                     public Boolean call(String s) {
                         final boolean b = !TextUtils.isEmpty(s) && s.length() > 1;
@@ -140,18 +140,18 @@ public class MainFragment extends BaseFragment {
                         return b;
                     }
                 })
-                .observeOn(Schedulers.io());
+                .observeOn(Schedulers.io());//следущее действие отслеживаем в отдельном потоке
     }
 
     private void subscribeOnTextChange() {
         subscription = stringObservable
-                .flatMap(new Func1<String, Observable<List<SearchResponse>>>() {
+                .flatMap(new Func1<String, Observable<List<SearchResponse>>>() { //последовательно после получения новой строки (прошедшей все предыдущие фильтры) делаем запрос в сеть
                     @Override
                     public Observable<List<SearchResponse>> call(String s) {
                         return abbreviationsApi.getResponse(s);
                     }
                 })
-                .map(new Func1<List<SearchResponse>, List<String>>() {
+                .map(new Func1<List<SearchResponse>, List<String>>() { //преобразуем ответ к тому формату, с которым в последствии будем работать
                     @Override
                     public List<String> call(List<SearchResponse> searchResponses) {
                         Log.d("Rx view", "flatMap List<String>");
@@ -164,26 +164,25 @@ public class MainFragment extends BaseFragment {
                         return strings;
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<String>>() {
+                .subscribeOn(Schedulers.io()) //работу с сетью и преобразования выполняем в отдельном потоке
+                .observeOn(AndroidSchedulers.mainThread()) //результат получаем в главном потоке
+                .subscribe(new Subscriber<List<String>>() { //подписываемся на результат
                     @Override
                     public void onCompleted() {
                         Log.d("Rx view", "onCompleted");
-                    }
+                    } //не вызовется, так как в самом первом Observable не вызывается onComplete
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(Throwable e) { //вызовется в случае какой-нибудь ошибки
                         MainFragment.this.onError(e);
                         if (isVisible())
-                            subscribeOnTextChange();
+                            subscribeOnTextChange(); //подпишемся заново - не нашёл выхода лучше =(
                     }
 
                     @Override
-                    public void onNext(List<String> strings) {
+                    public void onNext(List<String> strings) {//сюда придут уже преобразованные данные
 
                         setProgressIndicator(View.GONE, View.VISIBLE);
-
                         Log.d("Rx view", "onNext");
                         if (isVisible())
                             listView.setAdapter(getStringArrayAdapter(strings));
