@@ -14,7 +14,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,27 +53,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void manualThreading() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final List<SearchResponse> kg = getApi().getResponseSync("kg");
+        new Thread(() -> {
+            try {
+                final List<SearchResponse> kg = getApi().getResponseSync("kg");
 
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            //handle response
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            //handle error
-                        }
-                    });
-                }
+                handler.post(() -> {
+                    //handle response
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                handler.post(() -> {
+                    //handle error
+                });
             }
         }).start();
     }
@@ -105,16 +95,10 @@ public class MainActivity extends AppCompatActivity {
         getApi()
                 .getObservableResponse("kg")
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<SearchResponse>>() {
-                    @Override
-                    public void call(List<SearchResponse> searchResponses) {
-                        //handle response
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        //handle error
-                    }
+                .subscribe(searchResponses -> {
+                    //handle response
+                }, throwable -> {
+                    //handle error
                 });
     }
 
