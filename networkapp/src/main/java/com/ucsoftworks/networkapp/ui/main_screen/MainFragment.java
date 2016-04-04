@@ -33,10 +33,14 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -82,8 +86,66 @@ public class MainFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initStringObservable();
 
+        rxComplexWay();
+
+//        rxShorterWay();
+
+//        syncInNewThread();
+
+//        asyncViaCall();
+
+
+    }
+
+    private void asyncViaCall() {
+        abbreviationsApi
+                .getResponse("kg")
+                .enqueue(new Callback<List<SearchResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<SearchResponse>> call, Response<List<SearchResponse>> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<SearchResponse>> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    private void syncInNewThread() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final Response<List<SearchResponse>> execute = abbreviationsApi
+                            .getResponse("kg")
+                            .execute();
+                    final List<SearchResponse> body = execute.body();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void rxShorterWay() {
+        abbreviationsApi
+                .getObservableResponse("kg")
+                .subscribeOn(Schedulers.io()) //работу с сетью и преобразования выполняем в отдельном потоке
+                .observeOn(AndroidSchedulers.mainThread()) //результат получаем в главном потоке
+                .subscribe(new Action1<List<SearchResponse>>() {
+                    @Override
+                    public void call(List<SearchResponse> searchResponses) {
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
     }
 
     @Override
@@ -105,8 +167,7 @@ public class MainFragment extends BaseFragment {
         ButterKnife.unbind(this);
     }
 
-
-    private void initStringObservable() {
+    private void rxComplexWay() {
         stringObservable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
@@ -144,50 +205,51 @@ public class MainFragment extends BaseFragment {
     }
 
     private void subscribeOnTextChange() {
-        subscription = stringObservable
-                .flatMap(new Func1<String, Observable<List<SearchResponse>>>() { //последовательно после получения новой строки (прошедшей все предыдущие фильтры) делаем запрос в сеть
-                    @Override
-                    public Observable<List<SearchResponse>> call(String s) {
-                        return abbreviationsApi.getResponse(s);
-                    }
-                })
-                .map(new Func1<List<SearchResponse>, List<String>>() { //преобразуем ответ к тому формату, с которым в последствии будем работать
-                    @Override
-                    public List<String> call(List<SearchResponse> searchResponses) {
-                        Log.d("Rx view", "flatMap List<String>");
-                        if (searchResponses.size() != 1)
-                            return new ArrayList<>();
-                        final List<Lf> lfs = searchResponses.get(0).getLfs();
-                        ArrayList<String> strings = new ArrayList<>(lfs.size());
-                        for (Lf lf : lfs)
-                            strings.add(lf.getLf());
-                        return strings;
-                    }
-                })
-                .subscribeOn(Schedulers.io()) //работу с сетью и преобразования выполняем в отдельном потоке
-                .observeOn(AndroidSchedulers.mainThread()) //результат получаем в главном потоке
-                .subscribe(new Subscriber<List<String>>() { //подписываемся на результат
-                    @Override
-                    public void onCompleted() {
-                        Log.d("Rx view", "onCompleted");
-                    } //не вызовется, так как в самом первом Observable не вызывается onComplete
+        if (stringObservable != null)
+            subscription = stringObservable
+                    .flatMap(new Func1<String, Observable<List<SearchResponse>>>() { //последовательно после получения новой строки (прошедшей все предыдущие фильтры) делаем запрос в сеть
+                        @Override
+                        public Observable<List<SearchResponse>> call(String s) {
+                            return abbreviationsApi.getObservableResponse(s);
+                        }
+                    })
+                    .map(new Func1<List<SearchResponse>, List<String>>() { //преобразуем ответ к тому формату, с которым в последствии будем работать
+                        @Override
+                        public List<String> call(List<SearchResponse> searchResponses) {
+                            Log.d("Rx view", "flatMap List<String>");
+                            if (searchResponses.size() != 1)
+                                return new ArrayList<>();
+                            final List<Lf> lfs = searchResponses.get(0).getLfs();
+                            ArrayList<String> strings = new ArrayList<>(lfs.size());
+                            for (Lf lf : lfs)
+                                strings.add(lf.getLf());
+                            return strings;
+                        }
+                    })
+                    .subscribeOn(Schedulers.io()) //работу с сетью и преобразования выполняем в отдельном потоке
+                    .observeOn(AndroidSchedulers.mainThread()) //результат получаем в главном потоке
+                    .subscribe(new Subscriber<List<String>>() { //подписываемся на результат
+                        @Override
+                        public void onCompleted() {
+                            Log.d("Rx view", "onCompleted");
+                        } //не вызовется, так как в самом первом Observable не вызывается onComplete
 
-                    @Override
-                    public void onError(Throwable e) { //вызовется в случае какой-нибудь ошибки
-                        MainFragment.this.onError(e);
-                        if (isVisible())
-                            subscribeOnTextChange(); //подпишемся заново - не нашёл выхода лучше =(
-                    }
+                        @Override
+                        public void onError(Throwable e) { //вызовется в случае какой-нибудь ошибки
+                            MainFragment.this.onError(e);
+                            if (isVisible())
+                                subscribeOnTextChange(); //подпишемся заново - не нашёл выхода лучше =(
+                        }
 
-                    @Override
-                    public void onNext(List<String> strings) {//сюда придут уже преобразованные данные
+                        @Override
+                        public void onNext(List<String> strings) {//сюда придут уже преобразованные данные
 
-                        setProgressIndicator(View.GONE, View.VISIBLE);
-                        Log.d("Rx view", "onNext");
-                        if (isVisible())
-                            listView.setAdapter(getStringArrayAdapter(strings));
-                    }
-                });
+                            setProgressIndicator(View.GONE, View.VISIBLE);
+                            Log.d("Rx view", "onNext");
+                            if (isVisible())
+                                listView.setAdapter(getStringArrayAdapter(strings));
+                        }
+                    });
     }
 
     private void onError(Throwable e) {

@@ -4,6 +4,7 @@ import com.ucsoftworks.networkapp.network.models.SearchResponse;
 
 import java.util.List;
 
+import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -14,6 +15,10 @@ import rx.Observable;
 public interface AbbreviationsApi {
 
     @GET("dictionary.py")
-    Observable<List<SearchResponse>> getResponse(@Query("sf") String searchString);
+    Call<List<SearchResponse>> getResponse(@Query("sf") String searchString);
+
+    @GET("dictionary.py")
+    Observable<List<SearchResponse>> getObservableResponse(@Query("sf") String searchString);
+
 
 }
