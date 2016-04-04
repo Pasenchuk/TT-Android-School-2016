@@ -1,4 +1,4 @@
-package com.ucsoftworks.realmnotes;
+package com.ucsoftworks.realmnotes.ui;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;

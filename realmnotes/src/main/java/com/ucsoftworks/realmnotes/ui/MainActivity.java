@@ -1,4 +1,4 @@
-package com.ucsoftworks.realmnotes;
+package com.ucsoftworks.realmnotes.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
