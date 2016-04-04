@@ -1,1 +1,1 @@
-include ':app', ':intentsapp', ':lists', ':fragmentsopening', ':learnstack', ':concurrency', ':networkapp', ':retrofit1.9demo', ':r1.9andretrolambdademo'
+include ':app', ':intentsapp', ':lists', ':fragmentsopening', ':learnstack', ':concurrency', ':networkapp', ':retrofit1.9demo', ':r1.9andretrolambdademo', ':realmnotes'
