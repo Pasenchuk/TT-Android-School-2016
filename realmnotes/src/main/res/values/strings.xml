@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">RealmNotes</string>
     <string name="action_settings">Settings</string>
+    <string name="enter_note">Enter your note</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

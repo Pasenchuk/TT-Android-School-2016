@@ -1,15 +1,27 @@
 package com.ucsoftworks.realmnotes.ui;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+
+import com.ucsoftworks.realmnotes.R;
+import com.ucsoftworks.realmnotes.database.Note;
+
+import java.util.Date;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class MainActivity extends AppCompatActivity {
+
+    Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +30,40 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Create the Realm configuration
+        final RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        // Open the Realm for the UI thread.
+        realm = Realm.getInstance(realmConfig);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                final EditText input = new EditText(MainActivity.this);
+                new AlertDialog
+                        .Builder(MainActivity.this)
+                        .setTitle(getString(R.string.enter_note))
+                        .setView(input)
+                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                realm.beginTransaction();
+                                Note note = realm.createObject(Note.class);
+                                note.setDate(new Date());
+                                note.setNote(input.getText().toString());
+                                realm.commitTransaction();
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     @Override
