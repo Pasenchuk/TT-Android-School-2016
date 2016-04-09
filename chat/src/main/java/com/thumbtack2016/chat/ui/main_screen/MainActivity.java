@@ -9,6 +9,7 @@ import com.thumbtack2016.chat.network.AuthApi;
 import com.thumbtack2016.chat.network.models.Auth;
 import com.thumbtack2016.chat.network.models.Token;
 import com.thumbtack2016.chat.ui.dialogs.AuthDialog;
+import com.thumbtack2016.chat.ui.dialogs.MessageBox;
 
 import javax.inject.Inject;
 
@@ -43,12 +44,13 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new Action1<Token>() {
                     @Override
                     public void call(Token token) {
+                        MessageBox.show(token.getUser() + ": " + token.getToken(), MainActivity.this);
 
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
+                        MessageBox.show(getString(R.string.network_error), MainActivity.this);
                     }
                 });
     }
