@@ -2,6 +2,8 @@ package com.thumbtack2016.chat.di;
 
 import com.thumbtack2016.chat.ui.base.BaseActivity;
 import com.thumbtack2016.chat.ui.base.BaseFragment;
+import com.thumbtack2016.chat.ui.dialogs.AuthDialog;
+import com.thumbtack2016.chat.ui.main_screen.MainActivity;
 
 import javax.inject.Singleton;
 
@@ -19,4 +21,7 @@ public interface AppComponent {
 
     void inject(BaseFragment fragment);
 
+    void inject(AuthDialog authDialog);
+
+    void inject(MainActivity mainActivity);
 }
