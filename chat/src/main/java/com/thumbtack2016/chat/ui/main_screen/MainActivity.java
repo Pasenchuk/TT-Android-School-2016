@@ -1,7 +1,9 @@
-package com.thumbtack2016.chat;
+package com.thumbtack2016.chat.ui.main_screen;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+import com.thumbtack2016.chat.R;
 
 public class MainActivity extends AppCompatActivity {
 
