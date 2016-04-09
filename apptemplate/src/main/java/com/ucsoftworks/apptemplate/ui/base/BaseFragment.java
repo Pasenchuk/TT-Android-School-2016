@@ -88,4 +88,5 @@ public abstract class BaseFragment extends Fragment {
     public Preferences getPreferences() {
         return preferences;
     }
+
 }
