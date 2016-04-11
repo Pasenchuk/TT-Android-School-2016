@@ -33,23 +33,25 @@ public class MainActivity extends AppCompatActivity {
 
         new AuthDialog(this)
                 .show(getString(R.string.please_auth), "", "")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(new Func1<Auth, Observable<Token>>() {
                     @Override
                     public Observable<Token> call(Auth auth) {
                         return authApi.getToken(auth);
                     }
                 })
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Token>() {
                     @Override
                     public void call(Token token) {
-                        MessageBox.show(token.getUser() + ": " + token.getToken(), MainActivity.this);
+                        MessageBox.show(token.getToken(), MainActivity.this);
 
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        throwable.printStackTrace();
                         MessageBox.show(getString(R.string.network_error), MainActivity.this);
                     }
                 });

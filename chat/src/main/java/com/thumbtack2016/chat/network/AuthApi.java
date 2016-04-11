@@ -13,7 +13,7 @@ import rx.Observable;
  */
 public interface AuthApi {
 
-    @POST("device/auth/")
+    @POST("session/")
     Observable<Token> getToken(@Body Auth auth);
 
 }

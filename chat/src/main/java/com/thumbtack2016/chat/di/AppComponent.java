@@ -1,5 +1,6 @@
 package com.thumbtack2016.chat.di;
 
+import com.thumbtack2016.chat.network.gcm.RegistrationIntentService;
 import com.thumbtack2016.chat.ui.base.BaseActivity;
 import com.thumbtack2016.chat.ui.base.BaseFragment;
 import com.thumbtack2016.chat.ui.dialogs.AuthDialog;
@@ -24,4 +25,6 @@ public interface AppComponent {
     void inject(AuthDialog authDialog);
 
     void inject(MainActivity mainActivity);
+
+    void inject(RegistrationIntentService registrationIntentService);
 }
