@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 /**
  * Created by pasencukviktor on 10/04/16
  */
-public class Preferences {
+public class AppPreferences {
     public static final String APP_PREFERENCES = "APP_PREFERENCES";
 
     public static final String
@@ -15,11 +15,11 @@ public class Preferences {
 
     private SharedPreferences sharedPreferences;
 
-    public Preferences(Context context) {
+    public AppPreferences(Context context) {
         sharedPreferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
-    public Preferences setGcmId(String gcmId) {
+    public AppPreferences setGcmId(String gcmId) {
         sharedPreferences
                 .edit()
                 .putString(GCM_ID_KEY, gcmId)
@@ -27,11 +27,19 @@ public class Preferences {
         return this;
     }
 
-    public Preferences setGcmRegistered(boolean gcmRegistered) {
+    public String getGcmId() {
+        return sharedPreferences.getString(GCM_ID_KEY, null);
+    }
+
+    public AppPreferences setGcmRegistered(boolean gcmRegistered) {
         sharedPreferences
                 .edit()
                 .putBoolean(GCM_REGISTERED_KEY, gcmRegistered)
                 .apply();
         return this;
+    }
+
+    public boolean getGcmRegistered() {
+        return sharedPreferences.getBoolean(GCM_REGISTERED_KEY, false);
     }
 }

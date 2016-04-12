@@ -2,9 +2,11 @@ package com.thumbtack2016.chat.ui.main_screen;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.thumbtack2016.chat.R;
 import com.thumbtack2016.chat.app.App;
+import com.thumbtack2016.chat.app.AppPreferences;
 import com.thumbtack2016.chat.network.AuthApi;
 import com.thumbtack2016.chat.network.models.Auth;
 import com.thumbtack2016.chat.network.models.Token;
@@ -24,12 +26,22 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     AuthApi authApi;
 
+    @Inject
+    AppPreferences appPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         App.getApp(this).getAppComponent().inject(this);
+
+
+        if (appPreferences.getGcmId() != null)
+            Log.d("GCM ID", appPreferences.getGcmId());
+        else
+            Log.d("GCM ID", "not created");
 
         new AuthDialog(this)
                 .show(getString(R.string.please_auth), "", "")

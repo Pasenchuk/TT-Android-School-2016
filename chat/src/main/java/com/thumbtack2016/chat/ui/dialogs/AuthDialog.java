@@ -9,7 +9,7 @@ import android.widget.EditText;
 
 import com.thumbtack2016.chat.R;
 import com.thumbtack2016.chat.app.App;
-import com.thumbtack2016.chat.app.Preferences;
+import com.thumbtack2016.chat.app.AppPreferences;
 import com.thumbtack2016.chat.network.models.Auth;
 
 import javax.inject.Inject;
@@ -32,7 +32,7 @@ public class AuthDialog {
     private AlertDialog alertDialog;
 
     @Inject
-    Preferences preferences;
+    AppPreferences appPreferences;
 
     public AuthDialog(Activity activity) {
         this.activity = activity;

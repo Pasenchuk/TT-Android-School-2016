@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.squareup.otto.Bus;
 import com.thumbtack2016.chat.app.App;
-import com.thumbtack2016.chat.app.Preferences;
+import com.thumbtack2016.chat.app.AppPreferences;
 
 import javax.inject.Inject;
 
@@ -24,7 +24,7 @@ public abstract class BaseFragment extends Fragment {
     Bus bus;
 
     @Inject
-    Preferences preferences;
+    AppPreferences appPreferences;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,8 +85,8 @@ public abstract class BaseFragment extends Fragment {
         return bus;
     }
 
-    public Preferences getPreferences() {
-        return preferences;
+    public AppPreferences getAppPreferences() {
+        return appPreferences;
     }
 
 }

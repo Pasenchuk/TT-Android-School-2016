@@ -11,7 +11,7 @@ import android.util.Log;
 import com.squareup.otto.Bus;
 import com.thumbtack2016.chat.R;
 import com.thumbtack2016.chat.app.App;
-import com.thumbtack2016.chat.app.Preferences;
+import com.thumbtack2016.chat.app.AppPreferences;
 
 import javax.inject.Inject;
 
@@ -26,7 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     Bus bus;
 
     @Inject
-    Preferences preferences;
+    AppPreferences appPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,7 +109,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return bus;
     }
 
-    public Preferences getPreferences() {
-        return preferences;
+    public AppPreferences getAppPreferences() {
+        return appPreferences;
     }
 }

@@ -8,7 +8,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.thumbtack2016.chat.R;
 import com.thumbtack2016.chat.app.App;
-import com.thumbtack2016.chat.app.Preferences;
+import com.thumbtack2016.chat.app.AppPreferences;
 
 import java.io.IOException;
 
@@ -18,12 +18,12 @@ import javax.inject.Inject;
  * Created by wildf on 15.10.2015
  */
 public class RegistrationIntentService extends IntentService {
-
+    
     @Inject
-    Preferences preferences;
+    AppPreferences appPreferences;
 
-    public RegistrationIntentService(String name) {
-        super(name);
+    public RegistrationIntentService() {
+        super("RegistrationIntentService");
     }
 
     @Override
@@ -42,12 +42,12 @@ public class RegistrationIntentService extends IntentService {
             InstanceID instanceID = InstanceID.getInstance(this);
             registrationId = instanceID.getToken(getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
-            preferences
+            appPreferences
                     .setGcmId(registrationId)
                     .setGcmRegistered(false);
             Log.d("GCM", registrationId);
         } catch (IOException e) {
-            preferences
+            appPreferences
                     .setGcmId(null)
                     .setGcmRegistered(false);
         }

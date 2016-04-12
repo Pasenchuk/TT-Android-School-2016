@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.squareup.otto.Bus;
 import com.thumbtack2016.chat.app.App;
-import com.thumbtack2016.chat.app.Preferences;
+import com.thumbtack2016.chat.app.AppPreferences;
 import com.thumbtack2016.chat.network.AuthApi;
 
 import java.io.IOException;
@@ -44,8 +44,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public Preferences providePreferences() {
-        return new Preferences(app);
+    public AppPreferences providePreferences() {
+        return new AppPreferences(app);
     }
 
 
