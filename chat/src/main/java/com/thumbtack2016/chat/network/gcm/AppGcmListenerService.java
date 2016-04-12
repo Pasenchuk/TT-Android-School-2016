@@ -38,7 +38,7 @@ public class AppGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         Log.d("GCM from", from);
-        Log.d("GCM data", new Gson().toJson(data));
+        Log.d("GCM data", data.toString());
 
 
     }
