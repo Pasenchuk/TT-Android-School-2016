@@ -1,5 +1,6 @@
 package com.thumbtack2016.chat.ui.main_screen;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +9,7 @@ import com.thumbtack2016.chat.R;
 import com.thumbtack2016.chat.app.App;
 import com.thumbtack2016.chat.app.AppPreferences;
 import com.thumbtack2016.chat.network.AuthApi;
+import com.thumbtack2016.chat.network.gcm.RegistrationIntentService;
 import com.thumbtack2016.chat.network.models.Auth;
 import com.thumbtack2016.chat.network.models.Token;
 import com.thumbtack2016.chat.ui.dialogs.AuthDialog;
@@ -40,8 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (appPreferences.getGcmId() != null)
             Log.d("GCM ID", appPreferences.getGcmId());
-        else
+        else {
             Log.d("GCM ID", "not created");
+
+            startService(new Intent(this, RegistrationIntentService.class));
+        }
 
         new AuthDialog(this)
                 .show(getString(R.string.please_auth), "", "")
