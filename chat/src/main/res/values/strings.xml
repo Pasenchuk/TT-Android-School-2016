@@ -6,4 +6,5 @@
     <string name="please_auth">Please, log in</string>
     <string name="network_error">Network error</string>
     <string name="incoming_message">Incoming message</string>
+    <string name="no_play_services">No Play services</string>
 </resources>
