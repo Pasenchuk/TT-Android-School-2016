@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.squareup.otto.Bus;
 import com.thumbtack2016.chat.app.App;
 import com.thumbtack2016.chat.app.AppPreferences;
-import com.thumbtack2016.chat.network.AuthApi;
+import com.thumbtack2016.chat.network.ChatApi;
 
 import java.io.IOException;
 
@@ -38,26 +38,32 @@ public class AppModule {
 
     @Provides
     @Singleton
+    public App provideApp() {
+        return app;
+    }
+
+    @Provides
+    @Singleton
     public Bus provideBus() {
         return new Bus();
     }
 
     @Provides
     @Singleton
-    public AppPreferences providePreferences() {
+    public AppPreferences providePreferences(App app) {
         return new AppPreferences(app);
     }
 
 
     @Provides
     @Singleton
-    public AuthApi provideAuthApi() {
+    public ChatApi provideAuthApi(Interceptor interceptor) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
 
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                .addInterceptor(getInterceptor())
+                .addInterceptor(interceptor)
                 .addInterceptor(logging)
                 .build();
 
@@ -67,16 +73,19 @@ public class AppModule {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(httpClient)
                 .build()
-                .create(AuthApi.class);
+                .create(ChatApi.class);
     }
 
     @NonNull
-    private Interceptor getInterceptor() {
+    @Provides
+    @Singleton
+    public Interceptor getInterceptor(final AppPreferences preferences) {
         return new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Request request = chain.request().newBuilder()
                         .addHeader("Accept", "application/json")
+                        .addHeader("Authorization", "Token " + preferences.getToken())
                         .build();
                 return chain.proceed(request);
             }

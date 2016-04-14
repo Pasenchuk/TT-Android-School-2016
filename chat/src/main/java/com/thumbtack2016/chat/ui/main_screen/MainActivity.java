@@ -1,7 +1,9 @@
 package com.thumbtack2016.chat.ui.main_screen;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -10,7 +12,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.thumbtack2016.chat.R;
 import com.thumbtack2016.chat.app.App;
 import com.thumbtack2016.chat.app.AppPreferences;
-import com.thumbtack2016.chat.network.AuthApi;
+import com.thumbtack2016.chat.network.ChatApi;
 import com.thumbtack2016.chat.network.gcm.RegistrationIntentService;
 import com.thumbtack2016.chat.network.models.Auth;
 import com.thumbtack2016.chat.network.models.Token;
@@ -19,6 +21,7 @@ import com.thumbtack2016.chat.ui.dialogs.MessageBox;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
     @Inject
-    AuthApi authApi;
+    ChatApi chatApi;
 
     @Inject
     AppPreferences appPreferences;
@@ -45,40 +48,67 @@ public class MainActivity extends AppCompatActivity {
         App.getApp(this).getAppComponent().inject(this);
 
 
-        new AuthDialog(this)
-                .show(getString(R.string.please_auth), "", "")
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.io())
-                .flatMap(new Func1<Auth, Observable<Token>>() {
-                    @Override
-                    public Observable<Token> call(Auth auth) {
-                        return authApi.getToken(auth);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Token>() {
-                    @Override
-                    public void call(Token token) {
-                        MessageBox.show(token.getToken(), MainActivity.this);
-
-                        if (checkPlayServices()) {
-                            if (appPreferences.getGcmId() != null)
-                                Log.d("GCM ID", appPreferences.getGcmId());
-                            else {
-                                Log.d("GCM ID", "not created");
-
-                                startService(new Intent(MainActivity.this, RegistrationIntentService.class));
-                            }
+        if (!appPreferences.isLoggedIn())
+            new AuthDialog(this)
+                    .show(getString(R.string.please_auth), "", "")
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .observeOn(Schedulers.io())
+                    .flatMap(new Func1<Auth, Observable<Token>>() {
+                        @Override
+                        public Observable<Token> call(Auth auth) {
+                            return chatApi.getToken(auth);
                         }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Token>() {
+                        @Override
+                        public void call(Token token) {
+                            MessageBox.show(token.getToken(), MainActivity.this);
 
-                    }
-                }, new Action1<Throwable>() {
+                            appPreferences
+                                    .setToken(token.getToken())
+                                    .setLoggedIn(true);
+
+                            if (checkPlayServices()) {
+                                if (!appPreferences.isGcmRegistered()) {
+                                    registerGcm();
+                                    Log.d("GCM ID", appPreferences.getGcmId());
+                                } else {
+                                    Log.d("GCM ID", "not created");
+
+                                    startService(new Intent(MainActivity.this, RegistrationIntentService.class));
+                                }
+                            } else
+                                Log.d("GCM ID", "no play services");
+
+                        }
+                    }, getOnError());
+        else if (!appPreferences.isGcmRegistered() && checkPlayServices())
+            registerGcm();
+    }
+
+    private void registerGcm() {
+        chatApi
+                .gcmRegister(Build.MODEL, null, appPreferences.getGcmId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Void>() {
                     @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        MessageBox.show(getString(R.string.network_error), MainActivity.this);
+                    public void call(Void aVoid) {
+                        appPreferences.setGcmRegistered(true);
                     }
-                });
+                }, getOnError());
+    }
+
+    @NonNull
+    private Action1<Throwable> getOnError() {
+        return new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                throwable.printStackTrace();
+                MessageBox.show(getString(R.string.network_error), MainActivity.this);
+            }
+        };
     }
 
 
