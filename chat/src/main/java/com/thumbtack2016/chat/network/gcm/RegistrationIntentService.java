@@ -59,7 +59,6 @@ public class RegistrationIntentService extends IntentService {
                 chatApi
                         .gcmRegister(Build.MODEL, null, appPreferences.getGcmId())
                         .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<Void>() {
                             @Override
                             public void call(Void aVoid) {
