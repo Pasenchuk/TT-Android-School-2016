@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                         .show();
             } else {
                 Log.i(TAG, "This device is not supported.");
+                // Probably show alert there
                 MessageBox.show(R.string.no_play_services, this);
             }
             return false;
