@@ -14,6 +14,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -94,8 +95,13 @@ public class MainActivity extends AppCompatActivity {
     private void rxAndLambdas() {
         getApi()
                 .getObservableResponse("kg")
+                .map(searchResponses -> {
+                    if (searchResponses.size()==1)
+                        return searchResponses.get(0);
+                    return null;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(searchResponses -> {
+                .subscribe(searchResponse -> {
                     //handle response
                 }, throwable -> {
                     //handle error

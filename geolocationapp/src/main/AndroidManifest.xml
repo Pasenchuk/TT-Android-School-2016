@@ -18,6 +18,9 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="2c0142b72026b8d6c8ac9f1dd7a6bb811286c884" />
+
+        <service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService"/>
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
