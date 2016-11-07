@@ -28,6 +28,7 @@ public class MainActivity extends BaseActivity implements MainFragment.MainFragm
         final Intent intent = getIntent();
 
         if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+            // TODO: 07/11/2016 в этом интенте можно найти ссылку на картинку 
 
         }
 //        вызываем getSupportFragmentManager, так как по умлочанию у нас используется
