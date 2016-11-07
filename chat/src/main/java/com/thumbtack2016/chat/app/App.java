@@ -5,9 +5,11 @@ import android.app.Application;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
+import com.crashlytics.android.Crashlytics;
 import com.thumbtack2016.chat.di.AppComponent;
 import com.thumbtack2016.chat.di.AppModule;
 import com.thumbtack2016.chat.di.DaggerAppComponent;
+import io.fabric.sdk.android.Fabric;
 
 
 /**
@@ -31,6 +33,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         appComponent = DaggerAppComponent
                 .builder()

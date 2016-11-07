@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Geolocation App</string>
+    <string name="com.mapbox.mapboxsdk.accessToken" translatable="false">cihz77oyj048juskoq5ujrc98</string>
+</resources>

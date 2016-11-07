@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.ucsoftworks.networkapp.R;
 import com.ucsoftworks.networkapp.app.App;
 import com.ucsoftworks.networkapp.network.AbbreviationsApi;
@@ -53,7 +54,7 @@ public class MainFragment extends BaseFragment {
     @Inject
     AbbreviationsApi abbreviationsApi;
     @Bind(R.id.abbreviation)
-    EditText abbreviation;
+    EditText abbreviationEditText;
     @Bind(R.id.progress_bar)
     ProgressBar progressBar;
     @Bind(R.id.list_view)
@@ -70,6 +71,46 @@ public class MainFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getApp(this).getAppComponent().inject(this);
+
+
+        final Observable<Integer> integerObservable = Observable
+                .from(new Integer[]{1, 2, 3});
+
+        integerObservable
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        Log.d("integerObservable", String.valueOf(integer));
+                    }
+                });
+
+        integerObservable
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        Log.d("integerObservable", String.valueOf(integer));
+                    }
+                });
+
+
+        final Observable<String> textObservable = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                abbreviationEditText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        subscriber.onNext(charSequence.toString());
+                    }
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                    }
+                });
+            }
+        });
+
     }
 
 
@@ -87,7 +128,7 @@ public class MainFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        rxComplexWay();
+//        rxComplexWay();
 
 //        rxShorterWay();
 
@@ -131,19 +172,28 @@ public class MainFragment extends BaseFragment {
     }
 
     private void rxShorterWay() {
+
         abbreviationsApi
                 .getObservableResponse("kg")
+                .subscribeOn(Schedulers.io()) //работу с сетью и преобразования выполняем в отдельном потоке
+                .observeOn(AndroidSchedulers.mainThread()) //результат получаем в главном потоке
+                .flatMap(new Func1<List<SearchResponse>, Observable<List<SearchResponse>>>() {
+                    @Override
+                    public Observable<List<SearchResponse>> call(List<SearchResponse> searchResponses) {
+                        Log.d("result", String.valueOf(integer));
+                        return abbreviationsApi
+                                .getObservableResponse("km");
+                    }
+                })
                 .subscribeOn(Schedulers.io()) //работу с сетью и преобразования выполняем в отдельном потоке
                 .observeOn(AndroidSchedulers.mainThread()) //результат получаем в главном потоке
                 .subscribe(new Action1<List<SearchResponse>>() {
                     @Override
                     public void call(List<SearchResponse> searchResponses) {
-
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
                     }
                 });
     }
@@ -168,27 +218,15 @@ public class MainFragment extends BaseFragment {
     }
 
     private void rxComplexWay() {
-        stringObservable = Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(final Subscriber<? super String> subscriber) {
-                abbreviation.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        stringObservable.publish().connect()
 
-                    }
-
+        stringObservable = RxTextView.textChanges(abbreviationEditText)
+                .map(new Func1<CharSequence, String>() {
                     @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        listView.setAdapter(getStringArrayAdapter(new ArrayList<String>()));
-                        subscriber.onNext(charSequence.toString());
+                    public String call(CharSequence charSequence) {
+                        return charSequence.toString();
                     }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                    }
-                });
-            }
-        })
+                })
                 .debounce(TIMEOUT, TimeUnit.SECONDS) //если пользователь ничего не делал 1 секунду, то обрабатываем результат ввода. В противном случае игнорируем.
                 .observeOn(AndroidSchedulers.mainThread()) //следующий коллбэк переводим в UI поток (будем изменять Views)
                 .filter(new Func1<String, Boolean>() { //отсекаем слишком короткие строчки

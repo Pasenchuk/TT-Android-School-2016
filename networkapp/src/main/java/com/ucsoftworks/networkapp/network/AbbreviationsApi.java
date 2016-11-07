@@ -18,7 +18,7 @@ public interface AbbreviationsApi {
     Call<List<SearchResponse>> getResponse(@Query("sf") String searchString);
 
     @GET("dictionary.py")
-    Observable<List<SearchResponse>> getObservableResponse(@Query("sf") String searchString);
+    Observable<List<SearchResponse>> getObservableResponse(@Query("sf") CharSequence searchString);
 
 
 }
